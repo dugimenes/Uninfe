@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -290,6 +289,12 @@ namespace NFe.Components
         NFSeConsultaSequenciaLoteNotaRPS,
 
         /// <summary>
+        /// Consultar RPS disponível
+        /// </summary>
+        [Description("Consultar RPS disponível")]
+        NFSeConsultarRpsDisponivel,
+
+        /// <summary>
         /// Substituir NFS-e
         /// </summary>
         [Description("Substituir NFS-e")]
@@ -378,6 +383,18 @@ namespace NFe.Components
         /// </summary>
         [Description("Consultar NSU da NFSe NACIONAL")]
         NFSeConsultarDistribuicaoNFSeNSU,
+
+        /// <summary>
+        /// Consultar Eventos da NFSe por Chave de Acesso
+        /// </summary>
+        [Description("Consultar Eventos da NFSe por Chave de Acesso")]
+        NFSeConsultarEventosNFSeChaveAcesso,
+
+        /// <summary>
+        /// Consultar Eventos da NFSe por Chave de Acesso
+        /// </summary>
+        [Description("Consultar Dados Cadastrais da NFSe Inscricao Munícipal")]
+        NFSeConsultarDadosCadastraisNFSe,
 
         #endregion NFSe
 
@@ -688,10 +705,151 @@ namespace NFe.Components
 
         #endregion NFCom
 
+        #region NFGas
+
+        /// <summary>
+        /// Consulta procolo da NFGas
+        /// </summary>
+        NFGasConsultaProtocolo,
+
+        /// <summary>
+        /// Consulta status serviço NFGas
+        /// </summary>
+        NFGasStatusServico,
+
+        /// <summary>
+        /// Envio de Eventos da NFGas
+        /// </summary>
+        NFGasRecepcaoEvento,
+
+        /// <summary>
+        /// Envio do XML de NFGas
+        /// </summary>
+        NFGasAutorizacaoSinc,
+
+        #endregion NFGas
+
+        #region BPe
+
+        /// <summary>
+        /// Consulta protocolo do BPe
+        /// </summary>
+        BPeConsultaProtocolo,
+
+        /// <summary>
+        /// Consulta status serviço BPe
+        /// </summary>
+        BPeStatusServico,
+
+        /// <summary>
+        /// Envio de Eventos do BPe
+        /// </summary>
+        BPeRecepcaoEvento,
+
+        /// <summary>
+        /// Envio do XML de BPe
+        /// </summary>
+        BPeAutorizacao,
+
+        /// <summary>
+        /// Envio do XML de BPe TA
+        /// </summary>
+        BPeTAAutorizacao,
+
+        /// <summary>
+        /// Envio do XML de BPe TM
+        /// </summary>
+        BPeTMAutorizacao,
+
+        #endregion BPe
+
+        #region CIOT
+
+        /// <summary>
+        /// Cancelamento da operação de transporte do CIOT
+        /// </summary>
+        CIOTCancelamentoOperacaoTransporte,
+
+        /// <summary>
+        /// Consultar CIOT gerado
+        /// </summary>
+        CIOTConsultarCIOTGerado,
+
+        /// <summary>
+        /// Consultar exceção do CIOT
+        /// </summary>
+        CIOTConsultarExcecao,
+
+        /// <summary>
+        /// Consultar frota do transportador do CIOT
+        /// </summary>
+        CIOTConsultarFrotaTransportador,
+
+        /// <summary>
+        /// Consultar situação do transportador do CIOT
+        /// </summary>
+        CIOTConsultarSituacaoTransportador,
+
+        /// <summary>
+        /// Declaração da operação de transporte do CIOT
+        /// </summary>
+        CIOTDeclaracaoOperacaoTransporte,
+
+        /// <summary>
+        /// Encerramento da operação de transporte do CIOT
+        /// </summary>
+        CIOTEncerramentoOperacaoTransporte,
+
+        /// <summary>
+        /// Gerar identificador da operação de transporte do CIOT
+        /// </summary>
+        CIOTGerarIdOperacaoTransporte,
+
+        /// <summary>
+        /// Retificação da operação de transporte do CIOT
+        /// </summary>
+        CIOTRetificacaoOperacaoTransporte,
+
+        #endregion CIOT
+
+        #region DCe
+        /// <summary>
+        /// Consulta procolo da DCe
+        /// </summary>
+        DCeConsultaProtocolo,
+
+        /// <summary>
+        /// Consulta status serviço DCe
+        /// </summary>
+        DCeStatusServico,
+
+        /// <summary>
+        /// Envio de Eventos da DCe
+        /// </summary>
+        DCeRecepcaoEvento,
+
+        /// <summary>
+        /// Envio do XML de DCe
+        /// </summary>
+        DCeAutorizacaoSinc,
+        #endregion
+
         /// <summary>
         /// Nulo / Nenhum serviço em execução
         /// </summary>
-        Nulo
+        Nulo,
+
+        /// <summary>Gravar motorista na eFrete.</summary>
+        CIOTGravarMotorista,
+
+        /// <summary>Gravar proprietário na eFrete.</summary>
+        CIOTGravarProprietario,
+
+        /// <summary>Gravar veículo na eFrete.</summary>
+        CIOTGravarVeiculo,
+
+        /// <summary>Obter o PDF da operação de transporte na eFrete.</summary>
+        CIOTObterOperacaoTransportePdf
     }
 
     #endregion Servicos
@@ -757,7 +915,7 @@ namespace NFe.Components
         /// <summary>
         /// Aplicativo ou serviços para processamentos dos XMLs de todos os DFEs (exceto NFSe)
         /// </summary>
-        [Description("NF-e, NFC-e, NF3-e, NFCom, CT-e, MDF-e, GNRE, DARE e EFD Reinf e eSocial")]
+        [Description("NF-e, NFC-e, NF3-e, NFCom, NFGas, BPe, CIOT, CT-e, MDF-e, GNRE, DCe ,DARE e EFD Reinf e eSocial")]
         Todos = 10,
 
         /// <summary>
@@ -771,6 +929,30 @@ namespace NFe.Components
         /// </summary>
         [Description("NFCom")]
         NFCom = 12,
+
+        /// <summary>
+        /// Aplicativo ou serviços para processamentos dos XMLs da DCe
+        /// </summary>
+        [Description("DCe")]
+        DCe = 13,
+
+        /// <summary>
+        /// Aplicativo ou serviços para processamentos dos XMLs da NFGas
+        /// </summary>
+        [Description("NFGas")]
+        NFGas = 14,
+
+        /// <summary>
+        /// Aplicativo ou serviços para processamentos dos XMLs do CIOT
+        /// </summary>
+        [Description("CIOT")]
+        CIOT = 15,
+
+        /// <summary>
+        /// Aplicativo ou serviços para processamentos dos XMLs do BPe
+        /// </summary>
+        [Description("BPe")]
+        BPe = 16,
 
         [Description("")]
         Nulo = 100

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -341,6 +341,9 @@ namespace NFe.UI.Formularios
                 case TipoAplicativo.GNREeDARE:
                 case TipoAplicativo.NF3e:
                 case TipoAplicativo.NFCom:
+                case TipoAplicativo.NFGas:
+                case TipoAplicativo.BPe:
+                case TipoAplicativo.CIOT:
                     textBox_PastaXmlEmLote.Visible = false;
                     lbl_textBox_PastaLote.Visible = false;
                     textBox_PastaDownloadNFeDest.Visible = false;

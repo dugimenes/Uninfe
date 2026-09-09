@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NFe.Components;
 using NFe.Settings;
 using Unimake.Business.DFe.Xml.NFCom;
@@ -26,6 +26,7 @@ namespace NFe.Service.NFCom
         public override void Execute()
         {
             var emp = Empresas.FindEmpresaByThread();
+            Configuracao configuracao = null;
 
             try
             {
@@ -34,11 +35,13 @@ namespace NFe.Service.NFCom
                     var xmlConsSitNFCom = new Unimake.Business.DFe.Xml.NFCom.ConsSitNFCom();
                     xmlConsSitNFCom = Unimake.Business.DFe.Utility.XMLUtility.Deserializar<ConsSitNFCom>(ConteudoXML);
 
-                    var configuracao = new Configuracao
+                    configuracao = new Configuracao
                     {
+                    PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
                         TipoDFe = TipoDFe.NFCom,
                         TipoEmissao = Unimake.Business.DFe.Servicos.TipoEmissao.Normal,
-                        CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado
+                        CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
+                        ColetarTelemetriaDisponibilidade = true
                     };
 
                     if (ConfiguracaoApp.Proxy)
@@ -59,6 +62,9 @@ namespace NFe.Service.NFCom
                     XmlRetorno(Propriedade.Extensao(Propriedade.TipoEnvio.PedSit).EnvioXML, Propriedade.Extensao(Propriedade.TipoEnvio.PedSit).RetornoXML);
 
                     consultaProtocolo.Dispose();
+
+                    DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                        Propriedade.Extensao(Propriedade.TipoEnvio.PedSit).EnvioXML);
                 }
             }
             catch (Exception ex)
@@ -72,6 +78,9 @@ namespace NFe.Service.NFCom
                     //Se falhou algo na hora de gravar o retorno .ERR (de erro) para o ERP, infelizmente não posso fazer mais nada.
                     //Wandrey 09/03/2010
                 }
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.PedSit).EnvioXML);
             }
             finally
             {
@@ -112,8 +121,7 @@ namespace NFe.Service.NFCom
 
             #region CNPJ da chave não é de uma empresa cadastrada no UniNFe
 
-            var naoEhDaEmpresa = (xmlConsSitNFCom.ChNFCom.Substring(6, 14) != Empresas.Configuracoes[emp].CNPJ ||
-                xmlConsSitNFCom.ChNFCom.Substring(0, 2) != Empresas.Configuracoes[emp].UnidadeFederativaCodigo.ToString());
+            var naoEhDaEmpresa = !Functions.ChaveDFePertenceEmpresa(xmlConsSitNFCom.ChNFCom, Empresas.Configuracoes[emp].CNPJ, Empresas.Configuracoes[emp].UnidadeFederativaCodigo);
 
             if (!File.Exists(strArquivoNFCom))
             {
@@ -300,7 +308,7 @@ namespace NFe.Service.NFCom
                                                                         Path.GetFileName(strArquivoNFCom);
 
                                             // TODO: Ajustar a chamada ao UniDANFE quando a NFCom estiver implementada no software, tanto NFCom quanto evento da NFCom
-                                            TFunctions.ExecutaUniDanfe(strArquivoDist, oLerXml.oDadosNfe.dEmi, Empresas.Configuracoes[emp]);
+                                            UniDanfe.Executar(strArquivoDist, oLerXml.oDadosNfe.dEmi, Empresas.Configuracoes[emp]);
                                         }
                                         catch (Exception ex)
                                         {

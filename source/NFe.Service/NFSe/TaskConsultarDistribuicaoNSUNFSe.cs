@@ -76,12 +76,13 @@ namespace NFe.Service.NFSe
 
             var finalArqEnvio = Propriedade.Extensao(Propriedade.TipoEnvio.PedConsNsuNfse).EnvioXML;
             var finalArqRetorno = Propriedade.Extensao(Propriedade.TipoEnvio.PedConsNsuNfse).RetornoXML;
-            var versaoXML = DefinirVersaoXML(municipio, conteudoXML, padraoNFSe);
+            var versaoXML = ResolucaoCentralizadaNFSe.DefinirVersao(conteudoXML, padraoNFSe, municipio);
 
             Functions.DeletarArquivo(Empresas.Configuracoes[emp].PastaXmlRetorno + "\\" + Functions.ExtrairNomeArq(NomeArquivoXML, finalArqEnvio) + Functions.ExtractExtension(finalArqRetorno) + ".err");
 
             var configuracao = new Unimake.Business.DFe.Servicos.Configuracao
             {
+                    PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
                 TipoDFe = Unimake.Business.DFe.Servicos.TipoDFe.NFSe,
                 CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
                 TipoAmbiente = (Unimake.Business.DFe.Servicos.TipoAmbiente)Empresas.Configuracoes[emp].AmbienteCodigo,
@@ -117,32 +118,5 @@ namespace NFe.Service.NFSe
 
         #endregion ExecuteDLL
 
-        #region DefinirVersaoXML
-
-        /// <summary>
-        /// Retorna a versão do XML que está sendo enviado para o município de acordo com o Padrão/Município
-        /// </summary>
-        /// <param name="codMunicipio">Código do município para onde será enviado o XML</param>
-        /// <param name="xmlDoc">Conteúdo do XML da NFSe</param>
-        /// <param name="padraoNFSe">Padrão do munípio para NFSe</param>
-        /// <returns>Retorna a versão do XML que está sendo enviado para o município de acordo com o Padrão/Município</returns>
-        private string DefinirVersaoXML(int codMunicipio, XmlDocument xmlDoc, PadraoNFSe padraoNFSe)
-        {
-            var versaoXML = "0.00";
-
-            switch (padraoNFSe)
-            {
-                case PadraoNFSe.NACIONAL:
-                    versaoXML = "1.01";
-                    break;
-
-                default:
-                    throw new Exception("Padrão de NFSe " + padraoNFSe.ToString() + " não é válido para Consulta de NSU de NFS-e");
-            }
-
-            return versaoXML;
-        }
-
-        #endregion DefinirVersaoXML
     }
 }

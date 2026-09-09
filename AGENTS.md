@@ -1,0 +1,109 @@
+# UniNFe Codex Instructions
+
+## Project Context
+
+UniNFe is a C#/.NET Framework 4.8.1 solution for fiscal XML/TXT integration. It includes a WinForms/MetroFramework UI, a Windows Service host, service-processing projects, validation, settings, conversion, and shared libraries. The main solution is `source/uninfe.sln`.
+
+Main projects:
+
+- `NFe.Components`: constants, enums, file extensions, helpers, schemas, common functions, and shared infrastructure.
+- `NFe.Settings`: global and per-company configuration (`Empresas.Configuracoes`, `Empresa`, `ConfiguracaoApp`).
+- `NFe.Service`: file processing and fiscal-service integration. Most new operations should be implemented as `Task* : TaskAbst`.
+- `NFe.Validate`: XML/schema validation and signing.
+- `NFe.ConvertTxt`: TXT to XML conversion.
+- `NFe.Threadings`: folder monitoring, queues, and asynchronous processing.
+- `NFe.UI` and `uninfe`: WinForms UI based on MetroFramework.
+- `UniNFe.Service`: Windows Service host.
+- `MetroFramework`: embedded UI library; change it only for explicit visual infrastructure requests.
+
+## Implementation Rules
+
+- Preserve the current style: classic C#, project-based namespaces (`NFe.Components`, `NFe.Service`, `NFe.Settings`, `NFe.UI`, etc.), existing domain names, and `#region` usage where files already use it.
+- Do not migrate projects to SDK-style, modern .NET, `PackageReference`, or newer frameworks unless explicitly requested.
+- Avoid new dependencies when an existing helper or library already covers the need, especially `Unimake.Business.DFe`, `Unimake.*`, `Functions`, `Auxiliar`, `TFunctions`, `GerarXML`, `LerXML`, and `ValidarXMLNew`.
+- Use `Path.Combine` in new code when practical, but preserve existing comparisons, suffixes, and extensions when they are part of the ERP/file contract.
+- User-facing and ERP-facing errors/logs should be in Portuguese and follow the objective tone already used in the codebase.
+- Avoid broad refactors. Change the smallest set of files needed to preserve compatibility with existing integrations.
+
+## Service And File Flow
+
+- Central processing is in `NFe.Service.Processar`.
+- A new service type usually requires coordinated updates to:
+  - `NFe.Components.Enums.Servicos`;
+  - `NFe.Components.Propriedade.TipoEnvio` and `Propriedade.Extensao(...)`;
+  - detection/validation in `Processar.DefinirTipoServico` and `Processar.ValidarExtensao`, when applicable;
+  - the `Processar.ProcessaArquivo` switch;
+  - `Processar.GravaErroERP` for the correct `.err` return extension;
+  - examples under `exemplos xml`, when relevant.
+- New send/query operations should prefer a `Task... : TaskAbst` class with `Execute()` and `Servico` set in the constructor or before processing, following neighboring classes for the same DFe.
+- ERP returns should use `XmlRetorno(...)`, `oGerarXML.XmlRetorno(...)`, or `TFunctions.GravarArqErroServico(...)` according to the equivalent local pattern.
+- Preserve file suffixes such as `-ped-...xml`, `-ret-...xml`, `.err`, and `-proc...xml`; they are public contracts with ERPs.
+
+## XML, Validation, And Certificates
+
+- Use `XmlDocument` and existing routines when surrounding code already works with DOM XML.
+- For typed DFe classes, prefer `Unimake.Business.DFe` models and services.
+- Always respect `Empresas.Configuracoes[emp]` for environment, UF, certificate, proxy, CSC, technical responsible data, and folders.
+- Before sending anything that requires a certificate, follow existing patterns for `CertVencido(emp)`, `CarregarPINA3(emp)`, and `CertificadoDigital`.
+- Do not bypass validations for `tpAmb`, `tpEmis`, DFe key, schemas, or signatures.
+
+## Centralized NFSe Resolution
+
+- NFSe tasks must use the internal resolver in `NFe.Service.NFSe` for version and dynamic service selection. Do not recreate provider, municipality, root, or version switches inside individual tasks.
+- Tasks with a fixed service use only centralized version resolution. Tasks with a dynamic service consume the combined version/service result; when the service depends on the environment, pass `Empresas.Configuracoes[emp].AmbienteCodigo` explicitly.
+- Keep resolver tests deterministic and free of certificates, transport, and external endpoints. When a task's file-processing behavior changes, add a separate fixture/context test that executes the task.
+- Coordinate resolver behavior changes with the sibling `Unimake.DFe` checkout and run focused tests in both repositories.
+
+## TXT Regression Data And Anonymization
+
+- Whenever a user supplies a real TXT to reproduce NFe/NFCe conversion or compare the legacy UniNFe converter with Unimake.DFe, anonymize it before copying it into `exemplos xml`, `source/UniNFe.Test`, or the DLL repository.
+- Keep the anonymized UniNFe fixture synchronized with its counterpart under `C:\projetos\github\Unimake.DFe\source\Unimake.DFe.Test\...\Resources\Txt`; both converters must receive the same content in before/after tests.
+- Replace identifiable names or business names, CPF, sole-proprietor CNPJ when not essential to the scenario, state registration, email, phone, street/address/CEP, seller and order data, and duplicates in free-text segments such as `Z`, `Z04`, `ZD`, and observations.
+- Use obviously synthetic values such as `CLIENTE TESTE`, `EMPRESA TESTE`, `RUA EXEMPLO`, and `example.com` domains. Preserve only fiscal fields essential to the scenario; if changing an identifier affects the access key or check digit, keep it consistent or recalculate the key and update expectations.
+- Before finishing, scan every TXT added or changed and related fixtures for forgotten identifiable data, especially segments `E`, `E02`, `E03`, `E05`, `F`, `G`, `G02a`, `X03`, `X04`, `Z`, `Z04`, and `ZD`.
+- For before/after comparisons, run the same anonymized TXT through legacy UniNFe and the current DLL, compare the XMLs, and add an explicit assertion for the corrected behavior. Update hashes only after reviewing the anonymized fixture diff.
+- Add or retain a preventive test that fails if known identifiable data is reintroduced into TXT fixtures.
+
+## UI And Configuration
+
+- The UI is WinForms with MetroFramework. New screens should follow `NFe.UI.Formularios`, `MetroUserControl`, `UserControl1`, and display through `menu`, `FormDummy`, or `MetroTaskWindow`, according to the existing flow.
+- Do not manually edit `.Designer.cs` or `.resx` unless necessary and consistent with WinForms.
+- Persisted settings should go through `ConfiguracaoApp`, `Empresas`, `Empresa`, and existing configuration XMLs. Do not create parallel formats.
+
+## Concurrency, Files, And Logs
+
+- The project processes monitored folders. Avoid breaking queues, temporary files, locks, `EmProcessamento`, `Retorno`, `Erro`, `Enviados`, or per-company subfolders.
+- Use `Auxiliar.WriteLog(...)` or `Functions.WriteLog(...)` according to the current file. In Windows Service hosts, use `Program.WriteLog(...)` when that is the local pattern.
+- In `catch` blocks, preserve ERP error-return generation when it already exists. Do not replace expected response files with only internal logs.
+- Do not swallow new exceptions without logging or without returning an error file when the flow expects one.
+
+## Build And Validation
+
+- Main solution: `source/uninfe.sln`.
+- Projects use .NET Framework 4.8.1 and `packages.config`.
+- Before finishing relevant changes, validate with a build of the affected project or solution when the environment allows it, for example:
+
+```powershell
+dotnet build source/uninfe.sln --no-restore
+```
+
+- `source/UniNFe.Test` contains focused automated tests. Run the impacted classes and use equivalent XML/TXT examples in `exemplos xml` when practical.
+- Debug and Beta builds consume the sibling `Unimake.DFe` project directly to support joint maintenance. Release consumes the configured NuGet package; preserve this split when changing references.
+
+## Special Care
+
+- ERP contracts are based on file names, extensions, input/return XMLs, and configured folders. Treat these names as public APIs.
+- Backward compatibility is more important than style modernization.
+- Do not change `MetroFramework`, setup files, or XML examples in bulk without a direct need.
+- When changing NFSe, observe provider/city patterns in `NFe.Components.Schemas` and separated examples under `exemplos xml`.
+
+## Documentation Guidance
+
+- The UniNFe documentation must help users, support, and ERP integrators install, configure, operate, and integrate with the application.
+- Document behavior only from evidence found in code, WinForms forms, configuration files, XML/TXT models, examples, existing docs, or repository scripts.
+- Do not invent screens, service flows, folder behavior, file suffixes, validations, or operational steps. Mark uncertain items as `PENDENTE DE VALIDAÇÃO`.
+- Prefer simple Markdown in Portuguese do Brasil, with small linked pages instead of one large document.
+- Keep `docs/index.md` and `docs/_catalogo-documentacao.md` updated whenever documentation pages are created, moved, reviewed, or changed.
+- Keep the static documentation viewer index updated: whenever `.md` files under `docs` are created, removed, or renamed, run `node viewer/build-docs-index.js` from the `docs` folder and commit the regenerated `docs/viewer/docs-manifest.json` and `docs/viewer/search-index.json`.
+- Preserve Markdown Mermaid blocks when editing documentation, especially fenced blocks declared as `mermaid`, because the static viewer renders them as diagrams.
+- Use the `uninfe-documentacao` skill for tasks involving UniNFe documentation, service documentation, screen/form documentation, configuration documentation, file-exchange integration documentation, Markdown page organization, index updates, or documentation review.

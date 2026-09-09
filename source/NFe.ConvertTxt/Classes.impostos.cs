@@ -324,7 +324,7 @@ namespace NFe.ConvertTxt
         public string cClassTribIS;
         public double vBCIS;
         public double pIS;
-        public double pISEspec;
+        public double adRemIS;
         public string uTrib;
         public double qTrib;
         public double vIS;
@@ -371,7 +371,7 @@ namespace NFe.ConvertTxt
     }
 
 
-    public struct GEstornoCred
+    public class GEstornoCred
     {
         public double vIBSEstCred;
         public double vCBSEstCred;
@@ -424,6 +424,7 @@ namespace NFe.ConvertTxt
     /// </summary>
     public struct GDevTrib
     {
+        public double pDevTrib;
         public double vDevTrib;
     }
 

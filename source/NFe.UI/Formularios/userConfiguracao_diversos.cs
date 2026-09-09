@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
 using NFe.Components;
 using NFe.Settings;
 using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Net;
 using System.Windows.Forms;
 using Unimake.Business.DFe.Servicos;
 namespace NFe.UI.Formularios
@@ -186,16 +184,6 @@ namespace NFe.UI.Formularios
                     empresa.TokenNFSeExpire = result.TokenNFSeExpire;
                 }
 
-                if (empresa.UnidadeFederativaCodigo.Equals(5107925))
-                {
-                    var result = empresa.RecuperarConfiguracaoNFSeSoftplan(empresa.CNPJ);
-
-                    txtClienteID.Text = result.ClientID;
-                    txtClientSecret.Text = result.ClientSecret;
-                    empresa.ClientID = result.ClientID;
-                    empresa.ClientSecret = result.ClientSecret;
-                }
-
                 HabilitaUsuarioSenhaWS(this.empresa.UnidadeFederativaCodigo, this.empresa.Servico);
                 servicoCurrent = this.empresa.Servico;
 
@@ -215,7 +203,11 @@ namespace NFe.UI.Formularios
                     this.empresa.Servico.Equals(TipoAplicativo.Cte) ||
                     this.empresa.Servico.Equals(TipoAplicativo.Todos) ||
                     this.empresa.Servico.Equals(TipoAplicativo.NF3e) ||
-                    this.empresa.Servico.Equals(TipoAplicativo.NFCom))
+                    this.empresa.Servico.Equals(TipoAplicativo.NFCom) ||
+                    this.empresa.Servico.Equals(TipoAplicativo.NFGas) ||
+                    this.empresa.Servico.Equals(TipoAplicativo.BPe) ||
+                    this.empresa.Servico.Equals(TipoAplicativo.CIOT) ||
+                    this.empresa.Servico.Equals(TipoAplicativo.DCe))
                 {
                     checkBoxValidarDigestValue.Checked = this.empresa.CompararDigestValueDFeRetornadoSEFAZ;
                 }
@@ -226,7 +218,11 @@ namespace NFe.UI.Formularios
                     this.empresa.Servico.Equals(TipoAplicativo.Cte) ||
                     this.empresa.Servico.Equals(TipoAplicativo.Todos) ||
                     this.empresa.Servico.Equals(TipoAplicativo.NF3e) ||
-                    this.empresa.Servico.Equals(TipoAplicativo.NFCom))
+                    this.empresa.Servico.Equals(TipoAplicativo.NFCom) ||
+                    this.empresa.Servico.Equals(TipoAplicativo.NFGas) ||
+                    this.empresa.Servico.Equals(TipoAplicativo.BPe) ||
+                    this.empresa.Servico.Equals(TipoAplicativo.CIOT) ||
+                     this.empresa.Servico.Equals(TipoAplicativo.DCe))
                 {
                     checkBoxGravarWarnings.Checked = this.empresa.GravarWarnings;
                 }
@@ -239,9 +235,9 @@ namespace NFe.UI.Formularios
             }
         }
 
-       public bool Validar(bool exibeerro, bool novaempresa)
+        public bool Validar(bool exibeerro, bool novaempresa)
         {
-            var cnpj = this.edtCNPJ.Text.RemoveChars('/', '-', ',', '.',' '); // (string)Functions.OnlyNumbers(edtCNPJ.Text, ".-/");
+            var cnpj = this.edtCNPJ.Text.RemoveChars('/', '-', ',', '.', ' ').ToUpperInvariant(); // (string)Functions.OnlyNumbers(edtCNPJ.Text, ".-/");
 
 
 
@@ -329,7 +325,7 @@ namespace NFe.UI.Formularios
                     throw new Exception("As seguintes informações tem que estarem todas informadas: Usuário, Senha, ClientID e ClientSecret");
                 }
 
-                
+
                 empresa.SalvarConfiguracoesNFSeSoftplan(txtUsuarioWS.Text,
                                                         txtSenhaWS.Text,
                                                         txtClienteID.Text,
@@ -367,7 +363,10 @@ namespace NFe.UI.Formularios
                                      (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.MDFe ||
                                      (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.Todos ||
                                      (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NF3e ||
-                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NFCom;
+                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NFCom ||
+                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NFGas ||
+                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.BPe ||
+                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.CIOT;
 
             checkBoxGravarWarnings.Visible = (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NFCe ||
                                      (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.Nfe ||
@@ -375,7 +374,11 @@ namespace NFe.UI.Formularios
                                      (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.MDFe ||
                                      (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.Todos ||
                                      (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NF3e ||
-                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NFCom;
+                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NFCom ||
+                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NFGas ||
+                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.BPe ||
+                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.CIOT ||
+                                     (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.DCe;
 
             if ((TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.Nfe ||
                 (TipoAplicativo)cbServico.SelectedValue == TipoAplicativo.NFCe ||
@@ -399,12 +402,11 @@ namespace NFe.UI.Formularios
             {
                 var padraoNfse = Functions.BuscaPadraoNFSe(ufCod);
 
-                if (padraoNfse == PadraoNFSe.IPM || padraoNfse == PadraoNFSe.SIMPLISS || padraoNfse == PadraoNFSe.FIORILLI || 
-                    padraoNfse == PadraoNFSe.SMARAPD || padraoNfse == PadraoNFSe.EL || padraoNfse == PadraoNFSe.ADM_SISTEMAS || 
-                    padraoNfse == PadraoNFSe.MEMORY || padraoNfse == PadraoNFSe.MODERNIZACAO_PUBLICA || padraoNfse == PadraoNFSe.WEBFISCO || 
-                    padraoNfse == PadraoNFSe.IIBRASIL || padraoNfse == PadraoNFSe.CENTI || padraoNfse == PadraoNFSe.FINTEL || 
-                    padraoNfse == PadraoNFSe.SIGISSWEB || padraoNfse == PadraoNFSe.CONAM || padraoNfse == PadraoNFSe.HM2SOLUCOES || 
-                    padraoNfse == PadraoNFSe.GIAP)
+                if (padraoNfse == PadraoNFSe.IPM || padraoNfse == PadraoNFSe.SIMPLISS || padraoNfse == PadraoNFSe.FIORILLI ||
+                    padraoNfse == PadraoNFSe.SMARAPD || padraoNfse == PadraoNFSe.EL || padraoNfse == PadraoNFSe.ADM_SISTEMAS ||
+                    padraoNfse == PadraoNFSe.MODERNIZACAO_PUBLICA || padraoNfse == PadraoNFSe.WEBFISCO ||
+                    padraoNfse == PadraoNFSe.CENTI || padraoNfse == PadraoNFSe.FINTEL || padraoNfse == PadraoNFSe.CONAM ||
+                    padraoNfse == PadraoNFSe.HM2SOLUCOES || padraoNfse == PadraoNFSe.GIAP)
                 {
                     lbl_UsuarioWS.Visible = true;
                     txtUsuarioWS.Visible = true;
@@ -428,7 +430,7 @@ namespace NFe.UI.Formularios
                 }
             }
             else
-            { 
+            {
                 lbl_SenhaWS.Visible = false;
                 txtSenhaWS.Visible = false;
             }
@@ -445,12 +447,12 @@ namespace NFe.UI.Formularios
             try
             {
                 var xuf = comboBox_UF.SelectedValue;
+                var padraoNfse = Functions.BuscaPadraoNFSe(Convert.ToInt32(xuf));
 
                 edtCodMun.Text = xuf.ToString();
 
-                edtPadrao.Text = EnumHelper.GetEnumItemDescription(Functions.BuscaPadraoNFSe(Convert.ToInt32(xuf)));
+                edtPadrao.Text = EnumHelper.GetEnumItemDescription(padraoNfse);
                 HabilitaUsuarioSenhaWS(Convert.ToInt32(edtCodMun.Text), TipoAplicativo.Nfse);
-
             }
             catch
             {
@@ -529,10 +531,10 @@ namespace NFe.UI.Formularios
 
         private void checkBoxRpsSincAssincTHEMA_CheckedChanged(object sender, EventArgs e)
         {
-             if (changeEvent != null)
-             {
+            if (changeEvent != null)
+            {
                 changeEvent(sender, e);
-             }
+            }
         }
 
         private void checkBoxGravarWarnings_CheckedChanged(object sender, EventArgs e)
@@ -550,7 +552,7 @@ namespace NFe.UI.Formularios
 
         private void edtCodMun_Click(object sender, EventArgs e)
         {
-
+            var teste = "";
         }
 
         private void txtClienteID_Click(object sender, EventArgs e)
@@ -570,8 +572,8 @@ namespace NFe.UI.Formularios
                     edtCodMun.Visible = true;
                     edtPadrao.Visible = true;
                     lbl_Padrao.Visible = true;
-                    cboDiretorioSalvarComo.Visible = false;
-                    lbl_DiretorioSalvarComo.Visible = false;
+                    cboDiretorioSalvarComo.Visible = true;
+                    lbl_DiretorioSalvarComo.Visible = true;
                     comboBox_tpEmis.Visible = false;
                     metroLabel11.Visible = false;
                     checkBoxGravarEventosNaPastaEnviadosNFe.Visible = false;
@@ -647,6 +649,9 @@ namespace NFe.UI.Formularios
 
                 case TipoAplicativo.NF3e:
                 case TipoAplicativo.NFCom:
+                case TipoAplicativo.NFGas:
+                case TipoAplicativo.BPe:
+                case TipoAplicativo.CIOT:
                     comboBox_UF.Visible = true;
                     comboBox_tpEmis.Visible = true;
                     udTempoConsulta.Visible = false;

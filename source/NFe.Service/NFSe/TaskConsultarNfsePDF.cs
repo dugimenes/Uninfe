@@ -1,4 +1,4 @@
-﻿using NFe.Components;
+using NFe.Components;
 using NFe.Settings;
 using System;
 using System.IO;
@@ -138,12 +138,13 @@ namespace NFe.Service.NFSe
             var finalArqEnvio = Propriedade.Extensao(Propriedade.TipoEnvio.PedNFSePDF).EnvioXML;
             var finalArqRetorno = Propriedade.Extensao(Propriedade.TipoEnvio.PedNFSePDF).RetornoXML;
             var servico = Unimake.Business.DFe.Servicos.Servico.NFSeConsultarNfsePDF;
-            var versaoXML = DefinirVersaoXML(municipio, conteudoXML, padraoNFSe);
+            var versaoXML = ResolucaoCentralizadaNFSe.DefinirVersao(conteudoXML, padraoNFSe, municipio);
 
             Functions.DeletarArquivo(Empresas.Configuracoes[emp].PastaXmlRetorno + "\\" + Functions.ExtrairNomeArq(NomeArquivoXML, finalArqEnvio) + Functions.ExtractExtension(finalArqRetorno) + ".err");
 
             var configuracao = new Unimake.Business.DFe.Servicos.Configuracao
             {
+                    PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
                 TipoDFe = Unimake.Business.DFe.Servicos.TipoDFe.NFSe,
                 CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
                 TipoAmbiente = (Unimake.Business.DFe.Servicos.TipoAmbiente)Empresas.Configuracoes[emp].AmbienteCodigo,
@@ -158,7 +159,7 @@ namespace NFe.Service.NFSe
 
             XmlRetorno(finalArqEnvio, finalArqRetorno);
 
-            if(padraoNFSe != PadraoNFSe.PRIMAX)
+            if((padraoNFSe != PadraoNFSe.PRIMAX) && (padraoNFSe != PadraoNFSe.CONAM)) 
             {
                 ExtrairPDF(emp, consultarNfsePDF, padraoNFSe);
             }
@@ -175,68 +176,6 @@ namespace NFe.Service.NFSe
             consultarNfsePDF.Dispose();
         }
 
-        /// <summary>
-        /// Retorna a versão do XML que está sendo enviado para o município de acordo com o Padrão/Município
-        /// </summary>
-        /// <param name="codMunicipio">Código do município para onde será enviado o XML</param>
-        /// <param name="xmlDoc">Conteúdo do XML da NFSe</param>
-        /// <param name="padraoNFSe">Padrão do munípio para NFSe</param>
-        /// <returns>Retorna a versão do XML que está sendo enviado para o município de acordo com o Padrão/Município</returns>
-        /// 
-        private string DefinirVersaoXML(int codMunicipio, XmlDocument xmlDoc, PadraoNFSe padraoNFSe)
-        {
-            var versaoXML = "0.00";
-
-            switch(padraoNFSe)
-            {
-                case PadraoNFSe.NACIONAL:
-                    versaoXML = (xmlDoc.GetElementsByTagName(xmlDoc.DocumentElement.Name)[0]).Attributes.GetNamedItem("versao").Value;
-                    break;
-
-                case PadraoNFSe.PROPRIOBARUERISP:
-                    versaoXML = "1.00";
-                    break;
-
-                case PadraoNFSe.CONAM:
-                    versaoXML = "2.00";
-
-                    if (codMunicipio == 3506102 || codMunicipio == 3509007)
-                    {
-                        versaoXML = "4.00";
-                    }
-
-                    break;
-                case PadraoNFSe.SIGISSWEB:
-                    versaoXML = "2.00";
-                    break;
-
-                case PadraoNFSe.PRODATA:
-                    versaoXML = "2.01";
-                    break;
-
-                case PadraoNFSe.GIF:
-                case PadraoNFSe.PRIMAX:
-                    if (xmlDoc.InnerXml.Contains("versao=\"1.01\""))
-                    {
-                        versaoXML = "1.01";
-                        break;
-                    }
-                    else
-                    {
-                        versaoXML = "1.00";
-                        break;
-                    }
-
-                case PadraoNFSe.SMARAPD:
-                    versaoXML = "1.01";
-                    break;
-
-                default:
-                    throw new Exception("Padrão de NFSe " + padraoNFSe.ToString() + " não é válido para Consulta de PDF de NFS-e.");
-            }
-
-            return versaoXML;
-        }
 
         /// <summary>
         /// Extrair o PDF retornado pela prefeitura na pasta de retorno
@@ -250,7 +189,6 @@ namespace NFe.Service.NFSe
 
             switch(padraoNFSe)
             {
-                case PadraoNFSe.NACIONAL:
                 case PadraoNFSe.PRODATA:
                     nomeTag = "Base64Pdf";
                     break;

@@ -1,4 +1,4 @@
-﻿using NFe.Components;
+using NFe.Components;
 using NFe.Settings;
 using System;
 using System.IO;
@@ -36,6 +36,7 @@ namespace NFe.Service
         public override void Execute()
         {
             var emp = Empresas.FindEmpresaByThread();
+            Configuracao configuracao = null;
 
             try
             {
@@ -45,11 +46,13 @@ namespace NFe.Service
                 var xml = new ConsSitMDFe();
                 xml = Unimake.Business.DFe.Utility.XMLUtility.Deserializar<ConsSitMDFe>(ConteudoXML);
 
-                var configuracao = new Configuracao
+                configuracao = new Configuracao
                 {
+                    PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
                     TipoDFe = TipoDFe.MDFe,
                     TipoEmissao = (Unimake.Business.DFe.Servicos.TipoEmissao)dadosPedSit.tpEmis,
-                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado
+                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
+                    ColetarTelemetriaDisponibilidade = true
                 };
 
                 if (ConfiguracaoApp.Proxy)
@@ -70,6 +73,9 @@ namespace NFe.Service
                 XmlRetorno(Propriedade.Extensao(Propriedade.TipoEnvio.PedSit).EnvioXML, Propriedade.Extensao(Propriedade.TipoEnvio.PedSit).RetornoXML);
 
                 consultaProtocolo.Dispose();
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.PedSit).EnvioXML);
             }
             catch (Exception ex)
             {
@@ -84,6 +90,9 @@ namespace NFe.Service
                     //Se falhou algo na hora de gravar o retorno .ERR (de erro) para o ERP, infelizmente não posso fazer mais nada.
                     //Wandrey 09/03/2010
                 }
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.PedSit).EnvioXML);
             }
             finally
             {
@@ -145,8 +154,7 @@ namespace NFe.Service
 
                 #region CNPJ da chave não é de uma empresa Uninfe
 
-                var notDaEmpresa = (ChaveMDFe.Substring(6, 14) != Empresas.Configuracoes[emp].CNPJ ||
-                                    ChaveMDFe.Substring(0, 2) != Empresas.Configuracoes[emp].UnidadeFederativaCodigo.ToString());
+                var notDaEmpresa = !Functions.ChaveDFePertenceEmpresa(ChaveMDFe, Empresas.Configuracoes[emp].CNPJ, Empresas.Configuracoes[emp].UnidadeFederativaCodigo);
 
                 if (!File.Exists(strArquivoNFe))
                 {
@@ -381,7 +389,7 @@ namespace NFe.Service
                                                     Propriedade.ExtRetorno.ProcMDFe;
                                                 try
                                                 {
-                                                    TFunctions.ExecutaUniDanfe(strArquivoDist, oLerXml.oDadosNfe.dEmi, Empresas.Configuracoes[emp]);
+                                                    UniDanfe.Executar(strArquivoDist, oLerXml.oDadosNfe.dEmi, Empresas.Configuracoes[emp]);
                                                 }
                                                 catch (Exception ex)
                                                 {

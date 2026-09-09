@@ -19,12 +19,14 @@ namespace NFe.Components
         private string localArq;
         private string url;
         private readonly HttpClient httpClient = new HttpClient();
+        private const int TimeoutAtualizacao = 10000;
 
         #endregion Private Fields
 
         #region Public Properties
 
         public IWebProxy Proxy { get; set; }
+        public bool InstaladorIniciado { get; private set; }
 
         #endregion Public Properties
 
@@ -42,6 +44,7 @@ namespace NFe.Components
             localArq = Path.Combine(Application.StartupPath, nomeInstalador);
 
             Proxy = proxy;
+            httpClient.Timeout = TimeSpan.FromMilliseconds(TimeoutAtualizacao);
         }
 
         #endregion Public Constructor
@@ -63,6 +66,9 @@ namespace NFe.Components
                     var webRequest = (HttpWebRequest)WebRequest.Create(url);
                     try
                     {
+                        webRequest.Timeout = TimeoutAtualizacao;
+                        webRequest.ReadWriteTimeout = TimeoutAtualizacao;
+
                         if (Proxy != null)
                         {
                             webRequest.Proxy = Proxy;
@@ -111,8 +117,8 @@ namespace NFe.Components
                 {
                     Functions.WriteLog($"Erro inesperado ao baixar update: {ex.Message}", true, true, "");
                     if (link == links[links.Count - 1])
-                    { 
-                        throw; 
+                    {
+                        throw;
                     }
                 }
 
@@ -134,7 +140,7 @@ namespace NFe.Components
             {
                 client.DefaultRequestHeaders.Add("X-token", "49edd27c-175d-801b-96b9-c4c0961e6a5a");
             }
-            
+
             var responseString = client.GetStringAsync("").Result;
             var response = new XmlDocument();
             response.LoadXml(responseString);
@@ -152,7 +158,7 @@ namespace NFe.Components
         {
             localArq = Path.Combine(Application.StartupPath, "UltimaAtualizacao.xml");
             data = data.AddDays(30);
-            
+
             var xml = new XDocument(new XDeclaration("1.0", "utf-8", null));
             var xmlElement = new XElement("UltimaAtualizacao");
             xmlElement.Add(new XElement("data", data));
@@ -168,6 +174,9 @@ namespace NFe.Components
             var webRequest = (HttpWebRequest)WebRequest.Create(url);
             try
             {
+                webRequest.Timeout = TimeoutAtualizacao;
+                webRequest.ReadWriteTimeout = TimeoutAtualizacao;
+
                 if (Proxy != null)
                     webRequest.Proxy = Proxy;
 
@@ -221,6 +230,7 @@ namespace NFe.Components
 
                     var parametros = "/SILENT /DIR=\"" + pastaInstalar + "\"";
                     Process.Start(localArq, parametros);
+                    InstaladorIniciado = true;
                 }
             }
             catch (Exception ex)

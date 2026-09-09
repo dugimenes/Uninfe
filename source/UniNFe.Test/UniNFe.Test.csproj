@@ -1,0 +1,114 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="eBoleto\BugFixes\184135\pagador-null-0000105601001-BoletoRegistrar.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="eBoleto\BugFixes\184135\full-0000105601001-BoletoRegistrar.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="10.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.22.0" />
+    <PackageReference Include="System.Text.Json" Version="10.0.11" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NFe.Service\NFe.Service.csproj" />
+    <ProjectReference Include="..\NFe.ConvertTxt\NFe.ConvertTxt.csproj" />
+    <ProjectReference Include="..\NFe.Settings\NFe.Settings.csproj" />
+    <ProjectReference Include="..\NFe.Threadings\NFe.Threadings.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <Reference Include="Unimake.Business.DFe">
+      <HintPath>..\NFe.ConvertTxt\bin\Release\Unimake.Business.DFe.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'Release'">
+    <ProjectReference Include="..\..\..\Unimake.DFe\source\.NET Standard\Unimake.Business.DFe\Unimake.Business.DFe.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\exemplos xml\NFe e NFCe 4.00\NFe\Exemplos RTC\*.txt" Link="NFeConvertTxt\Fixtures\RTC\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\exemplos xml\NFe e NFCe 4.00\NFe\99999999999999999999999999999999999999999991-nfe.txt" Link="NFeConvertTxt\Fixtures\NFe\NFe-4.00.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\exemplos xml\NFe e NFCe 4.00\NFCe\99999999999999999999999999999999999999999999-nfe.txt" Link="NFeConvertTxt\Fixtures\NFCe\NFCe-4.00.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\NFe_000250887_07_43_31-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\0000042301054300027600113072026-NFE.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\versaoprouducao-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000580_08606985000105_001-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\0000072301054300027600116072026-NFE-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\0000092301054300027600116072026-NFE-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\0000112301054300027600116072026-NFE-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\novaVersao-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\35260747498059000115550010004029951909226874-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\002310_01_01_31_07_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000479_09531276000170_003_31_07_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\nfe-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\14222_43343052000335_1_31_7_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\046481_01391063000189_0_03_08_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\Nota_Fiscal_20265.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\20819_22716895000289_1_382026-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\2140_01955703000136_4_8_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000071619_37870375000112_001_03_08_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\58_78789542000182_4_8_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000001_01_01_05_08_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\08785-NFe.TXT" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\31260803742159000170550020000003051000234068-NFE-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\31260803742159000170550020000003051000234068-NFE-orig-v5.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\060218_32336224000165_001_06_08_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\NT60860218.TXT" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\27260821287558000170650010001143821778530846-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\41260801182867000178550010001800011567804549-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\41260806225442000112550010002455051903698959-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\nfe000077-NFE.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\41260801182867000178550010001800811409310317-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\NFe_2998-nfe-orig-v2.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\NFe_2999-nfe-orig-v2.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000023655_11092080000179_001_11_08_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\398_15528301000160_1_11_08_2026-NFE-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\399_15528301000160_1_11_08_2026-NFE-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\35260847498059000115550010004030011909226990-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\35260847498059000115550010004030021004029993-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\0000056689-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\NFe_000049184_08_27_14-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\002320_01_01_17_08_2026-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000017136_19041494000180_001_19_08_2026-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\035814-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\161540-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000015493-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000000892-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000002191-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000000200-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000062981-nfe-orig.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000000411-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\000027937-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\NFe_RTC_CST200_Reducao100_TribRegular-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\RTC2026-NFe621-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\RTC2026-NFe622-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\RTC2026-NFe623-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="NFeConvertTxt\Fixtures\Regressions\RTC2026-NFe624-nfe.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  </Project>

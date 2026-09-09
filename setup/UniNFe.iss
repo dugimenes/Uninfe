@@ -44,9 +44,11 @@ Name: brazilianportuguese; MessagesFile: compiler:Languages\BrazilianPortuguese.
 [Files]
 Source: ..\source\uninfe\bin\Release\BouncyCastle.Cryptography.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\EBank.Solutions.Primitives.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\GeradorCIOTShared.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\itextsharp.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\MetroFramework.Design.dll; DestDir: {app}; Flags: ignoreversion
-Source: ..\source\uninfe\bin\Release\MetroFramework.Fonts.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\MetroFramework.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\MetroFramework.Fonts.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Microsoft.Bcl.Cryptography.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Microsoft.Bcl.Memory.dll; DestDir: {app}; Flags: ignoreversion
@@ -62,50 +64,48 @@ Source: ..\source\uninfe\bin\Release\Microsoft.IdentityModel.Abstractions.dll; D
 Source: ..\source\uninfe\bin\Release\Microsoft.IdentityModel.JsonWebTokens.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Microsoft.IdentityModel.Logging.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Microsoft.IdentityModel.Tokens.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\Newtonsoft.Json.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\NFe.Components.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\NFe.Components.Info.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\NFe.Components.Wsdl.dll; DestDir: {app}; Flags: ignoreversion
-Source: ..\source\uninfe\bin\Release\NFe.Components.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\NFe.ConvertTxt.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\NFe.Service.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\NFe.Settings.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\NFe.Threadings.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\NFe.UI.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\NFe.Validate.dll; DestDir: {app}; Flags: ignoreversion
-Source: ..\source\uninfe\bin\Release\Newtonsoft.Json.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Buffers.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.ComponentModel.Annotations.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Diagnostics.DiagnosticSource.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Formats.Asn1.dll; DestDir: {app}; Flags: ignoreversion
-Source: ..\source\uninfe\bin\Release\System.IO.Pipelines.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.IdentityModel.Tokens.Jwt.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\System.IO.Pipelines.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Memory.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\System.Net.Http.WinHttpHandler.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Numerics.Vectors.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\System.Resources.Extensions.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Runtime.CompilerServices.Unsafe.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Security.Cryptography.Xml.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Text.Encodings.Web.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Text.Json.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\System.Threading.Tasks.Extensions.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\Topshelf.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Unimake.AuthServer.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Unimake.Business.DFe.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Unimake.Cryptography.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Unimake.EBank.Solutions.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Unimake.Extensions.dll; DestDir: {app}; Flags: ignoreversion
-Source: ..\source\uninfe\bin\Release\Unimake.MessageBroker.Primitives.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Unimake.MessageBroker.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\Unimake.MessageBroker.Primitives.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Unimake.Primitives.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Unimake.Security.Platform.dll; DestDir: {app}; Flags: ignoreversion
 Source: ..\source\uninfe\bin\Release\Unimake.Utils.dll; DestDir: {app}; Flags: ignoreversion
-Source: ..\source\uninfe\bin\Release\itextsharp.dll; DestDir: {app}; Flags: ignoreversion
 
 Source: ..\source\uninfe\bin\Release\UniNFe.exe; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\UniNFe.exe.config; DestDir: {app}; Flags: ignoreversion; Check: SistemaOperacionalSuportaNet481
 
-Source: ..\source\uninfe.service\bin\Release\Topshelf.dll; DestDir: {app}; Flags: ignoreversion
+Source: ..\source\uninfe\bin\Release\UniNFe.Service.exe.config; DestDir: {app}; Flags: ignoreversion; Check: SistemaOperacionalSuportaNet481
 Source: ..\source\uninfe.service\bin\Release\UniNFe.Service.exe; DestDir: {app}; Flags: ignoreversion
-
-Source: ..\source\NFe.Components.Wsdl\NFe\WSDL\*.*; DestDir: {app}\nfe\wsdl; Flags: ignoreversion recursesubdirs
-Source: ..\source\NFe.Components.Wsdl\NFe\schemas\*.*; DestDir: {app}\nfe\schemas; Flags: ignoreversion recursesubdirs
-Source: ..\source\NFe.Components.Wsdl\NFse\WSDL\*.*; DestDir: {app}\nfse\wsdl; Flags: ignoreversion recursesubdirs
-Source: ..\source\NFe.Components.Wsdl\NFse\schemas\*.*; DestDir: {app}\nfse\schemas; Flags: ignoreversion recursesubdirs
 
 [Icons]
 Name: {group}\UniNFe - Monitor DF-e; Filename: {app}\uninfe.exe; WorkingDir: {app}; IconFilename: {app}\uninfe.exe; IconIndex: 0; Languages: ; Comment: Aplicativo responsável por monitorar os arquivos de documentos fiscais eletrônicos (NF-e, NFC-e, CT-e, MDF-e, NFS-e, etc.) para assinar, validar e enviar ao SEFAZ.
@@ -120,6 +120,22 @@ LanguageName=Portuguese
 LanguageID=$0416
 
 [Code]
+function SistemaOperacionalSuportaNet481(): Boolean;
+var
+    WindowsVersion: TWindowsVersion;
+begin
+    GetWindowsVersionEx(WindowsVersion);
+
+    // .NET Framework 4.8.1:
+    // - Windows 10 22H2 ou superior: 10.0.19045+
+    // - Windows 11: 10.0.22000+
+    // - Windows Server 2022: 10.0.20348+
+    // - Windows Server 2025 ou superior: 10.0.26100+
+    Result :=
+        (WindowsVersion.Major > 10) or
+        ((WindowsVersion.Major = 10) and (WindowsVersion.Build >= 19045));
+end;
+
 //incialização do setup. É sempre chamada pelo Inno ao iniciar o setup
 procedure InitializeWizard();
 var

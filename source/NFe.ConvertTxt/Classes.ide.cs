@@ -143,6 +143,8 @@ namespace NFe.ConvertTxt
         public double pRedutor {  get; set; }
 
         public TpcnTipoOperacaoEnteGovernamental tpOperGov { get; set; }
+
+        public List<string> refDFeAnt { get; set; } = new List<string>();
     }
 
     public class GPagAntecipado

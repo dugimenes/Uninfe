@@ -1,7 +1,7 @@
 #include ReadReg(HKEY_LOCAL_MACHINE,'Software\Sherlock Software\InnoTools\Downloader','ScriptPath','')
 
 #define MyAppName "Unimake.DFe"
-#define MyAppVersion "2026.03.31.1002"
+#define MyAppVersion "2026.08.16.1049"
 #define MyAppPublisher "Unimake Software"
 #define MyAppURL "http://www.uninfe.com.br"
 #define MyAppExeName "Unimake.Business.DFe.dll"
@@ -19,11 +19,11 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 VersionInfoCompany=Unimake Software
-DefaultDirName={pf}\Unimake\{#MyAppName}
+DefaultDirName={commonpf}\Unimake\{#MyAppName}
 DisableDirPage=yes
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-; LicenseFile="..\..\fontes\Package\licenças\licenca.txt"
+; LicenseFile="..\..\fontes\Package\licenï¿½as\licenca.txt"
 OutputDir=\projetos\instaladores
 OutputBaseFilename=Install_Unimake.DFe
 Compression=lzma
@@ -31,11 +31,11 @@ SolidCompression=yes
 AppCopyright=Unimake Software
 AppMutex=Unimake.DFe_MUTEX
 AllowUNCPath=False
-VersionInfoVersion=2026.03.31.1002
+VersionInfoVersion=2026.08.16.1049
 VersionInfoCopyright=2020 - Todos os direitos reservados
 VersionInfoProductName=Unimake.DFe
-VersionInfoProductVersion=2026.03.31.1002
-VersionInfoProductTextVersion=2026.03.31.1002
+VersionInfoProductVersion=2026.08.16.1049
+VersionInfoProductTextVersion=2026.08.16.1049
 UsePreviousAppDir=False
 PrivilegesRequired=admin
 
@@ -58,6 +58,7 @@ Source: "C:\projetos\github\Unimake.DFe\Exemplos\VB6\System.Security.Cryptograph
 ;Registrar
 ;----------------------------------------------------------------------------------------------------
 Source: "Register_UnimakeDFe.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Unregister_UnimakeDFe.bat"; DestDir: "{app}"; Flags: ignoreversion
 ;----------------------------------------------------------------------------------------------------
 ;.netstandard
 ;----------------------------------------------------------------------------------------------------
@@ -66,6 +67,20 @@ Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Re
 Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\Unimake.Cryptography.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\Unimake.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+;----------------------------------------------------------------------------------------------------
+;Gerador de CIOT em produÃ§Ã£o e dependÃªncias
+;----------------------------------------------------------------------------------------------------
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\GeradorCIOTShared.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\Microsoft.Bcl.AsyncInterfaces.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\System.Buffers.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\System.Memory.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\System.Net.Http.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\System.Numerics.Vectors.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\System.Text.Encodings.Web.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\System.Text.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\projetos\github\Unimake.DFe\source\Unimake.DFe\Compilacao\INTEROP_Release\netstandard2.0\System.Net.Http.WinHttpHandler.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ;----------------------------------------------------------------------------------------------------
 ;DLLs net472
@@ -79,13 +94,13 @@ Filename: "{app}\Register_UnimakeDFe.bat"; Flags: runhidden; StatusMsg: "Registr
 Type: filesandordirs; Name: "{app}\Unimake.DFe"
 
 [Code]
-//incialização do setup. É sempre chamada pelo Inno ao iniciar o setup
+//incializaÃ§Ã£o do setup. Ã‰ sempre chamada pelo Inno ao iniciar o setup
 procedure InitializeWizard();
 var
     filename  : string;
     regresult : cardinal;
 begin
-    // verifica se o framework 4.7.2 sp1 está instalado.
+    // verifica se o framework 4.7.2 sp1 estÃ¡ instalado.
     // mais detalhes para outros frameworks: https://msdn.microsoft.com/pt-br/library/Hh925568(v=VS.110).aspx
     RegQueryDWordValue(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\full', 'Release', regresult);
     //< 461808 
@@ -93,25 +108,25 @@ begin
       // definir o caminho do arquivo
       filename := expandconstant('{tmp}\fx472.exe');
 
-      // não está instalado. Exibir a mensagem para o usuário se deseja instalar o fw
-      if MsgBox('Para continuar a instalação é necessário fazer o download do Framework 4.7.2. Deseja continuar?', mbInformation, mb_YesNo) = idYes then begin
+      // nÃ£o estÃ¡ instalado. Exibir a mensagem para o usuÃ¡rio se deseja instalar o fw
+      if MsgBox('Para continuar a instalaÃ§Ã£o Ã© necessÃ¡rio fazer o download do Framework 4.7.2. Deseja continuar?', mbInformation, mb_YesNo) = idYes then begin
           //iniciar o itd
           itd_init;
 
-          //adiciona um arquivo na fila de downloads. (pode se adicionar quantos forem necessários)
+          //adiciona um arquivo na fila de downloads. (pode se adicionar quantos forem necessÃ¡rios)
           itd_addfile('http://unimake2.com.br/NDP472-KB4054530-x86-x64-AllOS-ENU.exe', filename);
           itd_addmirror('http://74.222.1.252/download/NDP472-KB4054530-x86-x64-AllOS-ENU.exe', filename)
 
-          //aqui dizemos ao itd que é para fazer o download após o inno exibir a tela de preparação do setup
+          //aqui dizemos ao itd que Ã© para fazer o download apÃ³s o inno exibir a tela de preparaÃ§Ã£o do setup
           itd_downloadafter(wpReady);
         end else begin
-          // o usuário optou por não fazer o download do fw, então avisamos de onde ele pode baixar
-          MsgBox('O link para download manual do framework é http://go.microsoft.com/fwlink/?linkid=863265', mbInformation, mb_Ok);
+          // o usuÃ¡rio optou por nÃ£o fazer o download do fw, entÃ£o avisamos de onde ele pode baixar
+          MsgBox('O link para download manual do framework ï¿½ http://go.microsoft.com/fwlink/?linkid=863265', mbInformation, mb_Ok);
       end
     end
 end;
 
-//Este método é chamado pelo Inno ao clicar em próximo. Neste momento a interface já está criada
+//Este mÃ©todo Ã© chamado pelo Inno ao clicar em prÃ³ximo. Neste momento a interface jÃ¡ estÃ¡ criada
 procedure CurStepChanged(CurStep: TSetupStep);
 var
     filename  : string;
@@ -122,8 +137,8 @@ filename := expandconstant('{tmp}\fx472.exe');
 
 if CurStep = ssInstall then begin
     
-    // este passo só irá acontecer após o download do arquivo.
-    // para evitar erros, validamos se o arquivo foi baixado. Se não foi, continua com o setup.
+    // este passo sÃ³ irÃ¡ acontecer apÃ³s o download do arquivo.
+    // para evitar erros, validamos se o arquivo foi baixado. Se nÃ£o foi, continua com o setup.
     if fileExists(filename) then begin
        // foi baixado. Executar o instalador do fw.
        if not ShellExec('', filename,'', '', SW_SHOW, ewWaitUntilTerminated, ErrorCode) then begin

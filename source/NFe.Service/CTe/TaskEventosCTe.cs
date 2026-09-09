@@ -1,4 +1,4 @@
-﻿using NFe.Components;
+using NFe.Components;
 using NFe.Settings;
 using System;
 using System.Xml;
@@ -28,6 +28,7 @@ namespace NFe.Service
         public override void Execute()
         {
             var emp = Empresas.FindEmpresaByThread();
+            Configuracao configuracao = null;
 
             try
             {
@@ -43,11 +44,13 @@ namespace NFe.Service
                     (int)TipoEmissao.Normal :
                     dadosEnvEvento.eventos[0].tpEmis);
 
-                var configuracao = new Configuracao
+                configuracao = new Configuracao
                 {
+                    PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
                     TipoDFe = TipoDFe.CTe,
                     TipoEmissao = (Unimake.Business.DFe.Servicos.TipoEmissao)tpEmis,
-                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado
+                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
+                    ColetarTelemetriaDisponibilidade = true
                 };
 
                 var recepcaoEvento = new Unimake.Business.DFe.Servicos.CTe.RecepcaoEvento(xml, configuracao);
@@ -61,6 +64,9 @@ namespace NFe.Service
                 LerRetornoEvento(emp);
 
                 recepcaoEvento.Dispose();
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.PedEve).EnvioXML);
             }
             catch(Exception ex)
             {
@@ -74,6 +80,9 @@ namespace NFe.Service
                     //Se falhou algo na hora de gravar o retorno .ERR (de erro) para o ERP, infelizmente não posso fazer mais nada.
                     //Wandrey 09/03/2010
                 }
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.PedEve).EnvioXML);
             }
             finally
             {
@@ -179,7 +188,7 @@ namespace NFe.Service
                                     case ConvertTxt.tpEventos.tpEvEPEC:
                                         try
                                         {
-                                            TFunctions.ExecutaUniDanfe(oGerarXML.NomeArqGerado, DateTime.Today, Empresas.Configuracoes[emp]);
+                                            UniDanfe.Executar(oGerarXML.NomeArqGerado, DateTime.Today, Empresas.Configuracoes[emp]);
                                         }
                                         catch(Exception ex)
                                         {

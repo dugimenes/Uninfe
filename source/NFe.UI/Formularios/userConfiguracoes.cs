@@ -1,4 +1,4 @@
-﻿using NFe.Components;
+using NFe.Components;
 using NFe.Settings;
 using System;
 using System.Collections.Generic;
@@ -548,6 +548,9 @@ namespace NFe.UI
                     case TipoAplicativo.Todos:
                     case TipoAplicativo.NF3e:
                     case TipoAplicativo.NFCom:
+                    case TipoAplicativo.NFGas:
+                    case TipoAplicativo.BPe:
+                    case TipoAplicativo.CIOT:
                         uce_cert.Validar();
                         uce_ftp.Validar();
                         uce_danfe.Validar();
@@ -615,7 +618,7 @@ namespace NFe.UI
                     if (ok)
                     {
                         currentEmpresa = new Empresa();
-                        currentEmpresa.CNPJ = f.edtCNPJ.Text.RemoveChars('/', '-', ',', '.'); // Functions.OnlyNumbers(f.edtCNPJ.Text, ".,-/").ToString();
+                        currentEmpresa.CNPJ = f.edtCNPJ.Text.RemoveChars('/', '-', ',', '.').ToUpperInvariant(); // Functions.OnlyNumbers(f.edtCNPJ.Text, ".,-/").ToString();
                         currentEmpresa.InscricaoEstadual = Functions.OnlyNumbers(f.txtbInscricaoEstadual.Text.Trim(), ".,-/").ToString();
                         currentEmpresa.CNPJ += currentEmpresa.InscricaoEstadual;
                         currentEmpresa.Nome = f.edtNome.Text;
@@ -927,6 +930,9 @@ namespace NFe.UI
                 case TipoAplicativo.Todos:
                 case TipoAplicativo.NF3e:
                 case TipoAplicativo.NFCom:
+                case TipoAplicativo.NFGas:
+                case TipoAplicativo.BPe:
+                case TipoAplicativo.CIOT:
                     uce_divs.Populate(empresa, novaempresa);
                     uce_pastas.Populate(empresa);
                     uce_cert.Populate(empresa);

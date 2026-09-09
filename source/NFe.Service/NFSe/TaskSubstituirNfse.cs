@@ -1,4 +1,4 @@
-﻿using NFe.Components;
+using NFe.Components;
 using NFe.Settings;
 using System;
 using System.IO;
@@ -86,12 +86,13 @@ namespace NFe.Service.NFSe
 
             var finalArqEnvio = Propriedade.Extensao(Propriedade.TipoEnvio.PedSubstNfse).EnvioXML;
             var finalArqRetorno = Propriedade.Extensao(Propriedade.TipoEnvio.PedSubstNfse).RetornoXML;
-            var versaoXML = DefinirVersaoXML(municipio, conteudoXML, padraoNFSe);
+            var versaoXML = ResolucaoCentralizadaNFSe.DefinirVersao(conteudoXML, padraoNFSe, municipio);
 
             Functions.DeletarArquivo(Empresas.Configuracoes[emp].PastaXmlRetorno + "\\" + Functions.ExtrairNomeArq(NomeArquivoXML, finalArqEnvio) + Functions.ExtractExtension(finalArqRetorno) + ".err");
 
             var configuracao = new Unimake.Business.DFe.Servicos.Configuracao
             {
+                PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
                 TipoDFe = Unimake.Business.DFe.Servicos.TipoDFe.NFSe,
                 CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
                 TipoAmbiente = (Unimake.Business.DFe.Servicos.TipoAmbiente)Empresas.Configuracoes[emp].AmbienteCodigo,
@@ -122,149 +123,5 @@ namespace NFe.Service.NFSe
             substituirNfse.Dispose();
         }
 
-        /// <summary>
-        /// Retorna a versão do XML que está sendo enviado para o município de acordo com o Padrão/Município
-        /// </summary>
-        /// <param name="codMunicipio">Código do município para onde será enviado o XML</param>
-        /// <param name="xmlDoc">Conteúdo do XML da NFSe</param>
-        /// <param name="padraoNFSe">Padrão do munípio para NFSe</param>
-        /// <returns>Retorna a versão do XML que está sendo enviado para o município de acordo com o Padrão/Município</returns>
-        private string DefinirVersaoXML(int codMunicipio, XmlDocument xmlDoc, PadraoNFSe padraoNFSe)
-        {
-            var versaoXML = "0.00";
-
-            switch (padraoNFSe)
-            {
-                case PadraoNFSe.TECNOSISTEMAS:
-                    versaoXML = "1.00";
-                    break;
-
-                case PadraoNFSe.DBSELLER:
-                    versaoXML = "1.00";
-
-                    if (codMunicipio == 4319901)
-                    {
-                        versaoXML = "2.04";
-                    }
-                    break;
-
-                case PadraoNFSe.BETHA_CLOUD:
-                    versaoXML = "1.01";
-                    break;
-
-                case PadraoNFSe.DIGIFRED:
-                    versaoXML = "2.00";
-                    break;
-
-                case PadraoNFSe.SONNER:
-                case PadraoNFSe.QUASAR:
-                case PadraoNFSe.FIORILLI:
-                case PadraoNFSe.PRODEB:
-                    versaoXML = "2.01";
-                    break;
-
-                case PadraoNFSe.AVMB:
-                case PadraoNFSe.VERSATEC:
-                case PadraoNFSe.WEBISS:
-                case PadraoNFSe.PORTAL_FACIL:
-                case PadraoNFSe.MODERNIZACAO_PUBLICA:
-                case PadraoNFSe.BETHA:
-                case PadraoNFSe.FUTURIZE:
-                    versaoXML = "2.02";
-                    break;
-
-                case PadraoNFSe.SIMPLISS:                
-                case PadraoNFSe.FISCO:
-                case PadraoNFSe.RLZ_INFORMATICA:
-                case PadraoNFSe.ELOTECH:
-                case PadraoNFSe.TIPLAN:
-                    versaoXML = "2.03";
-                    break;
-
-
-                case PadraoNFSe.COPLAN:
-                    versaoXML = "2.03";
-
-                    if (codMunicipio == 3300407)
-                    {
-                        versaoXML = "2.02";
-                    }
-                    if (xmlDoc.InnerXml.Contains("versao=\"1.01\""))
-                    {
-                        versaoXML = "1.01";
-                    }
-                    break;
-
-                case PadraoNFSe.DSF:
-                    versaoXML = "2.03";
-
-                    if (codMunicipio == 3170206)
-                    {
-                        versaoXML = "2.04";
-                    }
-                    break;
-
-                case PadraoNFSe.EL:
-                case PadraoNFSe.TRIBUTUS:
-                case PadraoNFSe.ISSNET:
-                case PadraoNFSe.IPM:
-                    versaoXML = "2.04";
-                    break;
-
-                case PadraoNFSe.SIGISSWEB:
-                case PadraoNFSe.SIGCORP:
-                    versaoXML = "2.03";
-
-                    if (codMunicipio == 4204202 || codMunicipio == 3131307 || codMunicipio == 3530805 ||
-                        codMunicipio == 3145208 || codMunicipio == 3300704)
-                    {
-                        versaoXML = "2.04";
-                    }
-                    break;
-
-                case PadraoNFSe.SMARAPD:
-                    versaoXML = "2.03";
-
-                    if ((codMunicipio == 3506003 || codMunicipio == 3201308 || codMunicipio == 3530607 || codMunicipio == 3205200) || xmlDoc.OuterXml.Contains("infPedReg"))
-                    {
-                        versaoXML = "1.01";
-                    }
-
-                    else if (codMunicipio == 3205002 || codMunicipio == 3516200)
-                    {
-                        versaoXML = "2.04";
-                    }
-                    break;
-
-                case PadraoNFSe.ADM_SISTEMAS:
-                    versaoXML = "2.03";
-                    break;
-
-                case PadraoNFSe.FINTEL:
-                    versaoXML = "2.02";
-                    break;
-
-                case PadraoNFSe.PRONIM:
-                    versaoXML = "2.03";
-
-                    if (codMunicipio == 3113404 || codMunicipio == 4321006 || codMunicipio == 4303004 ||
-                        codMunicipio == 4300109 || codMunicipio == 4306932 || codMunicipio == 3302205 || 
-                        codMunicipio == 3530300)
-                    {
-                        versaoXML = "2.02";
-                    }
-                    if (codMunicipio == 3535804 || codMunicipio == 4304507 || codMunicipio == 4321709 ||
-                        codMunicipio == 4122404)
-                    {
-                        versaoXML = "1.00";
-                    }
-                    break;
-
-                default:
-                    throw new Exception("Padrão de NFSe " + padraoNFSe.ToString() + " não é válido para Substituir NFS-e.");
-            }
-
-            return versaoXML;
-        }
     }
 }

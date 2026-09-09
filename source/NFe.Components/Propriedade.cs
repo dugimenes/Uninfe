@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Linq;
-using Unimake.Business.DFe.Servicos;
+using Unimake.Business.DFe;
 
 namespace NFe.Components
 {
@@ -138,45 +136,17 @@ namespace NFe.Components
 
         public static TipoAplicativo TipoAplicativo { get; set; }
 
-        public static List<Municipio> Municipios { get; set; }
+        public static List<MunicipioNFSeConfiguracao> Municipios { get; set; }
 
-        private static List<Municipio> _Estados = null;
+        private static List<MunicipioNFSeConfiguracao> _Estados = null;
 
-        public static List<Municipio> Estados
+        public static List<MunicipioNFSeConfiguracao> Estados
         {
             get
             {
                 if (_Estados == null)
                 {
-                    _Estados = new List<Components.Municipio>();
-
-                    var doc = new XmlDocument();
-
-                    var config = new Configuracao();
-                    var stream = config.LoadXmlConfig(Unimake.Business.DFe.Configuration.ArquivoConfigGeral);
-
-                    doc.Load(stream);
-
-                    var arquivoList = doc.GetElementsByTagName("Arquivo");
-
-                    Console.WriteLine(arquivoList.Count);
-
-
-                    foreach (XmlNode arquivoNode in arquivoList)
-                    {
-                        var elemento = (XmlElement)arquivoNode;
-                        if (elemento.GetAttribute("ID").Length > 3 || elemento.GetElementsByTagName("UF")[0].InnerText == "SVRS" || elemento.GetElementsByTagName("UF")[0].InnerText == "AN")
-                            continue;
-                        {
-                            int id = Convert.ToInt32(elemento.GetAttribute("ID"));
-                            string nome = elemento.GetElementsByTagName("Nome")[0].InnerText;
-                            string uf = elemento.GetElementsByTagName("UF")[0].InnerText;
-                            PadraoNFSe padrao = PadraoNFSe.None;
-
-                            _Estados.Add(new Municipio(id, nome, uf, padrao));
-                        }
-
-                    }
+                    _Estados = Configuration.CarregarEstados();
                 }
                 return _Estados;
             }
@@ -274,6 +244,7 @@ namespace NFe.Components
             PedURLNFSe,
             PedURLNFSeSerie,
             PedSeqLoteNotaRPS,
+            PedConsRpsDisp,
             PedSubstNfse,
             PedSitNFSeRec,
             PedSitNFSeTom,
@@ -288,6 +259,8 @@ namespace NFe.Components
             PedRegEvento,
             PedConsEventosNfse,
             PedConsNsuNfse,
+            PedConsEventosNFSeChaveAcesso,
+            PedConsDadosCadastraisNFSe,
 
             /// <summary>
             /// CFSe
@@ -401,6 +374,61 @@ namespace NFe.Components
             /// NFCom
             /// </summary>
             NFCom,
+
+            /// <summary>
+            /// NFGas
+            /// </summary>
+            NFGas,
+
+            /// <summary>
+            /// BPe
+            /// </summary>
+            BPe,
+
+            /// <summary>
+            /// BPe TA
+            /// </summary>
+            BPeTA,
+
+            /// <summary>
+            /// BPe TM
+            /// </summary>
+            BPeTM,
+
+            /// <summary>
+            /// CIOT
+            /// </summary>
+            CIOT,
+
+            /// <summary>
+            /// Eventos do CIOT
+            /// </summary>
+            CIOTPedEve,
+
+            /// <summary>
+            /// Consultas do CIOT
+            /// </summary>
+            CIOTConsultar,
+
+            /// <summary>
+            /// Geração do identificador da operação de transporte do CIOT
+            /// </summary>
+            CIOTGerarIdOperacaoTransporte,
+
+            /// <summary>
+            /// DCe
+            /// </summary>
+            DCe,
+
+            /// <summary>
+            /// Cadastros exclusivos da eFrete
+            /// </summary>
+            CIOTCadastro,
+
+            /// <summary>
+            /// Obtenção do PDF da operação de transporte na eFrete
+            /// </summary>
+            CIOTPdf,
         }
 
         private static readonly Dictionary<TipoEnvio, ExtensaoClass> ListaExtensoes = new Dictionary<TipoEnvio, ExtensaoClass>();
@@ -605,6 +633,12 @@ namespace NFe.Components
                 "-seqlotenotarps.err",
                 "Consulta sequência do lote da nota RPS"));
 
+            ListaExtensoes.Add(TipoEnvio.PedConsRpsDisp, new ExtensaoClass(
+                "-ped-consrpsdisp.xml", "",
+                "-consrpsdisp.xml", "",
+                "-consrpsdisp.err",
+                "Consultar RPS disponível"));
+
             ListaExtensoes.Add(TipoEnvio.PedSubstNfse, new ExtensaoClass(
                 "-ped-substnfse.xml", "",
                 "-substnfse.xml", "",
@@ -695,6 +729,19 @@ namespace NFe.Components
                 "-nsunfse.xml", "",
                 "-nsunfse.err",
                 "Consultar NSU da NFSe NACIONAL"));
+
+            ListaExtensoes.Add(TipoEnvio.PedConsEventosNFSeChaveAcesso, new ExtensaoClass(
+                "-cons-chaveacesso.xml", "",
+                "-chaveacesso.xml", "",
+                "-chaveacesso.err",
+                "Consultar Eventos da NFSe por Chave de Acesso"));
+
+            ListaExtensoes.Add(TipoEnvio.PedConsDadosCadastraisNFSe, new ExtensaoClass(
+                "-ped-consdadoscad.xml", "",
+                "consdadoscad.xml", "",
+                "-consdadoscad.err",
+                "Consultar Dados Cadastrais da NFSe"));
+
 
             #endregion Extensoes da NFSe
 
@@ -1075,6 +1122,99 @@ namespace NFe.Components
 
             #endregion NFCom
 
+            #region NFGas
+
+            ListaExtensoes.Add(TipoEnvio.NFGas, new ExtensaoClass(
+               "-nfgas.xml", "",
+               "-ret-nfgas.xml", "",
+               "-ret-nfgas.err",
+               "XML de nfgas"
+               ));
+
+            #endregion NFGas
+
+            #region BPe
+
+            ListaExtensoes.Add(TipoEnvio.BPe, new ExtensaoClass(
+               "-bpe.xml", "",
+               "-ret-bpe.xml", "",
+               "-ret-bpe.err",
+               "XML de bpe"
+               ));
+
+            ListaExtensoes.Add(TipoEnvio.BPeTA, new ExtensaoClass(
+               "-bpe-ta.xml", "",
+               "-ret-bpe-ta.xml", "",
+               "-ret-bpe-ta.err",
+               "XML de bpe ta"
+               ));
+
+            ListaExtensoes.Add(TipoEnvio.BPeTM, new ExtensaoClass(
+               "-bpe-tm.xml", "",
+               "-ret-bpe-tm.xml", "",
+               "-ret-bpe-tm.err",
+               "XML de bpe tm"
+               ));
+
+            #endregion BPe
+
+            #region CIOT
+
+            ListaExtensoes.Add(TipoEnvio.CIOT, new ExtensaoClass(
+               "-ciot.xml", "",
+               "-ret-ciot.xml", "",
+               "-ret-ciot.err",
+               "XML de ciot"
+               ));
+
+            ListaExtensoes.Add(TipoEnvio.CIOTPedEve, new ExtensaoClass(
+               "-ped-eve.xml", "",
+               "-ret-ped-eve.xml", "",
+               "-ret-ped-eve.err",
+               "XML de evento ciot"
+               ));
+
+            ListaExtensoes.Add(TipoEnvio.CIOTConsultar, new ExtensaoClass(
+               "-consultar.xml", "",
+               "-ret-consultar.xml", "",
+               "-ret-consultar.err",
+               "XML de consulta ciot"
+               ));
+
+            ListaExtensoes.Add(TipoEnvio.CIOTGerarIdOperacaoTransporte, new ExtensaoClass(
+               "-GerarIdOpTransp.xml", "",
+               "-ret-GerarIdOpTransp.xml", "",
+               "-ret-GerarIdOpTransp.err",
+               "XML de geração do identificador da operação de transporte do ciot"
+               ));
+
+            ListaExtensoes.Add(TipoEnvio.CIOTCadastro, new ExtensaoClass(
+               "-cadciot.xml", "",
+               "-ret-cadciot.xml", "",
+               "-ret-cadciot.err",
+               "XML de cadastro eFrete do CIOT"
+               ));
+
+            ListaExtensoes.Add(TipoEnvio.CIOTPdf, new ExtensaoClass(
+               "-pdfciot.xml", "",
+               "-ret-pdfciot.xml", "",
+               "-ret-pdfciot.err",
+               "XML para obtenção do PDF da operação de transporte na eFrete"
+               ));
+
+            #endregion CIOT
+
+            #region DCe
+
+            ListaExtensoes.Add(TipoEnvio.DCe, new ExtensaoClass(
+               "-dce.xml", "",
+               "-ret-dce.xml", "",
+               "-ret-dce.err",
+               "XML de dce"
+               ));
+
+            #endregion DCe
+
             if (!ListaExtensoes.ContainsKey(value))
             {
                 throw new Exception($"{value} não encontrado na lista 'ListaExtensoes'.");
@@ -1236,6 +1376,11 @@ namespace NFe.Components
             public static string PedNfsePDF = Extensao(TipoEnvio.PedNFSePDF).EnvioXML;
 
             /// <summary>
+            /// -ped-consrpsdisp.xml
+            /// </summary>
+            public static string PedConsRpsDisp = Extensao(TipoEnvio.PedConsRpsDisp).EnvioXML;
+
+            /// <summary>
             /// -ped-convenio.xml
             /// </summary>
             public static string PedConvenio = Extensao(TipoEnvio.PedConvenio).EnvioXML;
@@ -1393,6 +1538,11 @@ namespace NFe.Components
         /// </summary>
         public class ExtRetorno
         {
+            /// <summary>
+            /// -diagdispdfe.xml
+            /// </summary>
+            public const string DiagnosticoDisponibilidadeDFe = "-diagdispdfe.xml";
+
             #region Extensoes que so estao aqui para quem utiliza o codigo em seus projetos
 
             public static string RetAltCon_XML = Extensao(TipoEnvio.AltCon).RetornoXML;
@@ -1656,6 +1806,11 @@ namespace NFe.Components
             public const string SeqLoteNotaRPS_ERR = "-seqlotenotarps.err";
 
             /// <summary>
+            /// -consrpsdisp.err
+            /// </summary>
+            public const string ConsRpsDisp_ERR = "-consrpsdisp.err";
+
+            /// <summary>
             /// -convenio.xml
             /// </summary>
             public static string Convenio = Extensao(TipoEnvio.PedConvenio).RetornoXML;
@@ -1745,6 +1900,22 @@ namespace NFe.Components
             /// </summary>
             public const string ConsNsuNfse_ERR = "-nsunfse.err";
 
+            /// <summary>
+            /// -chaveacesso.xml
+            /// </summary>
+            public static string ConsEventosNFSeChaveAcesso = Extensao(TipoEnvio.PedConsEventosNFSeChaveAcesso).RetornoXML;
+
+            /// <summary>
+            /// -chaveacesso.err
+            /// </summary>
+            public const string ConsEventosNFSeChaveAcesso_ERR = "-chaveacesso.err";
+
+
+            /// <summary>
+            /// "-ped-consdadoscad.xml"
+            /// </summary>
+            public const string ConsDadosCadastraisNFSe_ERR = "-consdadoscad.err";
+
             #endregion Extensões NFSe
 
             #region Extensoes de DFe
@@ -1810,6 +1981,97 @@ namespace NFe.Components
             public const string NFCom_ERR = "-nfcom.err";
 
             #endregion NFCom
+
+            #region NFGas
+
+            /// <summary>
+            /// -procNFGas.xml
+            /// </summary>
+            public const string ProcNFGas = "-procNFGas.xml";
+
+            /// <summary>
+            /// -procEventoNFGas.xml
+            /// </summary>
+            public const string ProcEventoNFGas = "-procEventoNFGas.xml";
+
+            /// <summary>
+            /// -nfgas.err
+            /// </summary>
+            public const string NFGas_ERR = "-nfgas.err";
+
+            #endregion NFGas
+
+            #region BPe
+
+            /// <summary>
+            /// -procBPe.xml
+            /// </summary>
+            public const string ProcBPe = "-procBPe.xml";
+
+            /// <summary>
+            /// -procBPeTM.xml
+            /// </summary>
+            public const string ProcBPeTM = "-procBPeTM.xml";
+
+            /// <summary>
+            /// -procBPeTA.xml
+            /// </summary>
+            public const string ProcBPeTA = "-procBPeTA.xml";
+
+            /// <summary>
+            /// -procEventoBPe.xml
+            /// </summary>
+            public const string ProcEventoBPe = "-procEventoBPe.xml";
+
+            /// <summary>
+            /// -bpe.err
+            /// </summary>
+            public const string BPe_ERR = "-bpe.err";
+
+            #endregion BPe
+
+            #region CIOT
+
+            /// <summary>
+            /// -procCIOT.xml
+            /// </summary>
+            public const string ProcCIOT = "-procCIOT.xml"; //Não deixar tudo minusculo para evitar problemas com Linux configurado para Case Sensitive. Wandrey 23/06/2011
+
+            /// <summary>
+            /// -ret-ciot.err
+            /// </summary>
+            public const string CIOT_ERR = "-ret-ciot.err";
+
+            /// <summary>
+            /// -procEventoCIOT.xml
+            /// </summary>
+            public const string ProcEventoCIOT = "-procEventoCIOT.xml"; //Não deixar tudo minusculo para evitar problemas com Linux configurado para Case Sensitive. Wandrey 23/06/2011
+
+            /// <summary>
+            /// -procIdOpTransp.xml
+            /// </summary>
+            public const string ProcIdOpTransp = "-procIdOpTransp.xml";
+
+            #endregion CIOT
+
+            #region DCe
+
+            /// <summary>
+            /// -procDCe.xml
+            /// </summary>
+            public const string ProcDCe = "-procDCe.xml"; //Não deixar tudo minusculo para evitar problemas com Linux configurado para Case Sensitive. Wandrey 23/06/2011
+
+            /// <summary>
+            /// -procEventoDCe.xml
+            /// </summary>
+            public const string ProcEventoDCe = "-procEventoDCe.xml";
+
+            /// <summary>
+            /// -dce.err
+            /// </summary>
+            public const string DCe_ERR = "-dce.err";
+
+            #endregion
         }
 
         #endregion Propriedades com as extensões dos XML ou TXT de retorno

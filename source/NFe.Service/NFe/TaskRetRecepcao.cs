@@ -1,4 +1,4 @@
-﻿using NFe.Components;
+using NFe.Components;
 using NFe.Settings;
 using System;
 using System.IO;
@@ -65,6 +65,8 @@ namespace NFe.Service
 
         public void Execute(int emp)
         {
+            Configuracao configuracao = null;
+
             try
             {
                 dadosPedRec = new DadosPedRecClass();
@@ -73,11 +75,13 @@ namespace NFe.Service
                 var xml = new ConsReciNFe();
                 xml = Unimake.Business.DFe.Utility.XMLUtility.Deserializar<ConsReciNFe>(ConteudoXML);
 
-                var configuracao = new Configuracao
+                configuracao = new Configuracao
                 {
+                    PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
                     TipoDFe = (dadosPedRec.mod == "65" ? TipoDFe.NFCe : TipoDFe.NFe),
                     TipoEmissao = (Unimake.Business.DFe.Servicos.TipoEmissao)dadosPedRec.tpEmis,
-                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado
+                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
+                    ColetarTelemetriaDisponibilidade = true
                 };
 
                 if (ConfiguracaoApp.Proxy)
@@ -104,6 +108,9 @@ namespace NFe.Service
                 XmlRetorno(Propriedade.Extensao(Propriedade.TipoEnvio.PedRec).EnvioXML, Propriedade.Extensao(Propriedade.TipoEnvio.PedRec).RetornoXML);
 
                 retAutorizacao.Dispose();
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.PedRec).EnvioXML);
             }
             catch (Exception ex)
             {
@@ -116,6 +123,9 @@ namespace NFe.Service
                     //Se falhou algo na hora de gravar o retorno .ERR (de erro) para o ERP, infelizmente não posso fazer mais nada.
                     //Pois ocorreu algum erro de rede, hd, permissão das pastas, etc. Wandrey 22/03/2010
                 }
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.PedRec).EnvioXML);
             }
             finally
             {
@@ -413,7 +423,7 @@ namespace NFe.Service
                     // na pasta "EmProcessamento" assinada.
                     if (string.IsNullOrEmpty(strNomeArqNfe))
                     {
-                        if (string.IsNullOrEmpty(strChaveNFe) && strStat == "100" || strStat == "150" || strStat == "110")
+                        if (string.IsNullOrEmpty(strChaveNFe) && (strStat == "100" || strStat == "120" || strStat == "150" || strStat == "110"))
                         {
                             throw new Exception("LerRetornoLoteNFe(): Não pode obter o nome do arquivo");
                         }
@@ -432,6 +442,7 @@ namespace NFe.Service
                         switch (strStat)
                         {
                             case "100": //NFe Autorizada
+                            case "120": //NFe Autorizada com alerta
                             case "150": //NFe Autorizada fora do prazo
                                 if (File.Exists(strArquivoNFe))
                                 {
@@ -513,7 +524,7 @@ namespace NFe.Service
                                     {
                                         if (oLerXml.oDadosNfe.tpEmis != "9")
                                         {
-                                            TFunctions.ExecutaUniDanfe(strArquivoDist, oLerXml.oDadosNfe.dEmi, Empresas.Configuracoes[emp]);
+                                            UniDanfe.Executar(strArquivoDist, oLerXml.oDadosNfe.dEmi, Empresas.Configuracoes[emp]);
                                         }
                                     }
                                     catch (Exception ex)
@@ -527,7 +538,7 @@ namespace NFe.Service
                                     if (!procNFeJaNaAutorizada || !NFeJaNaAutorizada)
                                     {
                                         tirarFluxo = false;
-                                        Auxiliar.WriteLog("TaskNFeRetRecepcao.FinalizarNFe: Arquivos não encontrados em autorizados após tentativa de mover. chave=" + strChaveNFe + ", arquivo=" + strNomeArqNfe, true);
+                                        Auxiliar.WriteLog("TaskNFeRetRecepcao.FinalizarNFe: Arquivos nao encontrados em autorizados apos tentativa de mover; mantendo em EmProcessamento e no fluxo. chave=" + strChaveNFe + ", arquivo=" + strNomeArqNfe, true);
                                     }
 
                                 ///
@@ -540,7 +551,8 @@ namespace NFe.Service
                                 }
                                 else
                                 {
-                                    Auxiliar.WriteLog("TaskRetRecepcao: (Foi efetuada uma consulta recibo e não foi localizado o arquivo da NFe ( " + strNomeArqNfe + ") na pasta EmProcessamento) ", false);
+                                    tirarFluxo = false;
+                                    Auxiliar.WriteLog("TaskNFeRetRecepcao.FinalizarNFe: Foi efetuada uma consulta recibo, mas o arquivo da NFe nao foi localizado em EmProcessamento; mantendo no fluxo para nova tentativa. Chave=" + strChaveNFe + ", arquivo=" + strNomeArqNfe, true);
                                 }
 
                                 break;
@@ -585,6 +597,7 @@ namespace NFe.Service
                         //Deletar a NFE do arquivo de controle de fluxo
                         if (tirarFluxo)
                         {
+                            Auxiliar.WriteLog("TaskNFeRetRecepcao.FinalizarNFe: Fluxo concluido por retorno fiscal conclusivo. Chave=" + strChaveNFe + ", cStat=" + strStat + ", arquivo=" + strNomeArqNfe, false);
                             fluxoNFe.ExcluirNfeFluxo(strChaveNFe);
                         }
                     }
@@ -602,3 +615,4 @@ namespace NFe.Service
         #endregion FinalizarNFe()
     }
 }
+

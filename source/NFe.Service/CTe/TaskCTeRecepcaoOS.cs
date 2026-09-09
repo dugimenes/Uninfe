@@ -1,4 +1,4 @@
-﻿using NFe.Components;
+using NFe.Components;
 using NFe.Settings;
 using System;
 using System.IO;
@@ -34,6 +34,7 @@ namespace NFe.Service
             var emp = Empresas.FindEmpresaByThread();
 
             var arqEmProcessamento = Empresas.Configuracoes[emp].PastaXmlEnviado + "\\" + PastaEnviados.EmProcessamento.ToString() + "\\" + (new FileInfo(NomeArquivoXML).Name);
+            Configuracao configuracao = null;
 
             try
             {
@@ -43,10 +44,12 @@ namespace NFe.Service
                 var xmlCTeOS = new CTeOS();
                 xmlCTeOS = Unimake.Business.DFe.Utility.XMLUtility.Deserializar<CTeOS>(ConteudoXML);
 
-                var configuracao = new Configuracao
+                configuracao = new Configuracao
                 {
+                    PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
                     TipoDFe = TipoDFe.CTeOS,
-                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado
+                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
+                    ColetarTelemetriaDisponibilidade = true
                 };
 
                 if (ConfiguracaoApp.Proxy)
@@ -90,6 +93,9 @@ namespace NFe.Service
                 #endregion
 
                 autorizacao.Dispose();
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.CTeOS).EnvioXML);
             }
             catch (Exception ex)
             {
@@ -110,6 +116,9 @@ namespace NFe.Service
                     TFunctions.GravarArqErroServico(arqXML, Propriedade.Extensao(Propriedade.TipoEnvio.CTeOS).EnvioXML, Propriedade.ExtRetorno.ProRec_ERR, ex);
                 }
                 catch { }
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.CTeOS).EnvioXML);
             }
         }
 
@@ -202,7 +211,7 @@ namespace NFe.Service
                                 {
 
                                     //Disparar o UniDANFe
-                                    TFunctions.ExecutaUniDanfe(arquivoAutorizado, autorizacao.CTeOS.InfCTe.Ide.DhEmi.DateTime, Empresas.Configuracoes[emp]);
+                                    UniDanfe.Executar(arquivoAutorizado, autorizacao.CTeOS.InfCTe.Ide.DhEmi.DateTime, Empresas.Configuracoes[emp]);
                                 }
                                 catch (Exception ex)
                                 {
@@ -253,7 +262,7 @@ namespace NFe.Service
                                 try
                                 {
                                     //Disparar o UniDANFe
-                                    TFunctions.ExecutaUniDanfe(arquivoDenegado, autorizacao.CTeOS.InfCTe.Ide.DhEmi.DateTime, Empresas.Configuracoes[emp]);
+                                    UniDanfe.Executar(arquivoDenegado, autorizacao.CTeOS.InfCTe.Ide.DhEmi.DateTime, Empresas.Configuracoes[emp]);
                                 }
                                 catch (Exception ex)
                                 {

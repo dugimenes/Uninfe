@@ -58,7 +58,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Beta|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;</DefineConstants>
+    <DefineConstants>TRACE;_BETA</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -67,59 +67,65 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
-      <HintPath>..\packages\BouncyCastle.Cryptography.2.6.2\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.7.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
     </Reference>
-    <Reference Include="EBank.Solutions.Primitives, Version=2026.3.16.1910, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unimake.EBank.Primitives.20260316.1910.18\lib\netstandard2.0\EBank.Solutions.Primitives.dll</HintPath>
+    <Reference Include="EBank.Solutions.Primitives, Version=2026.7.31.1624, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unimake.EBank.Primitives.20260731.1624.57\lib\netstandard2.0\EBank.Solutions.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.13.5, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13.5\lib\net461\itextsharp.dll</HintPath>
+    <Reference Include="GeradorCIOTShared, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unimake.DFe.20260908.1441.34\lib\net472\GeradorCIOTShared.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.10.0.5\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.13.6, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.6\lib\net461\itextsharp.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.Cryptography, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Cryptography.10.0.5\lib\net462\Microsoft.Bcl.Cryptography.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.10.0.11\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.Memory, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Memory.10.0.5\lib\net462\Microsoft.Bcl.Memory.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.Cryptography, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Cryptography.10.0.11\lib\net462\Microsoft.Bcl.Cryptography.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.TimeProvider, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.TimeProvider.10.0.5\lib\net462\Microsoft.Bcl.TimeProvider.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.6.0.0\lib\net462\Microsoft.Bcl.HashCode.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.Memory, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Memory.10.0.11\lib\net462\Microsoft.Bcl.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.TimeProvider, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.TimeProvider.10.0.11\lib\net462\Microsoft.Bcl.TimeProvider.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=10.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.10.0.5\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=10.0.0.11, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.10.0.11\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=10.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.10.0.5\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=10.0.0.11, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.10.0.11\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Logging, Version=10.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.10.0.5\lib\net462\Microsoft.Extensions.Logging.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Logging, Version=10.0.0.11, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.10.0.11\lib\net462\Microsoft.Extensions.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=10.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.10.0.5\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=10.0.0.11, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.10.0.11\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Options, Version=10.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Options.10.0.5\lib\net462\Microsoft.Extensions.Options.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Options, Version=10.0.0.11, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.10.0.11\lib\net462\Microsoft.Extensions.Options.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Primitives, Version=10.0.0.5, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Primitives.10.0.5\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=10.0.0.11, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.10.0.11\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Identity.Abstractions, Version=11.2.0.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Identity.Abstractions.11.2.0\lib\net462\Microsoft.Identity.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Identity.Abstractions, Version=12.6.1.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Abstractions.12.6.1\lib\net462\Microsoft.Identity.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=8.16.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.8.16.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=8.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.8.22.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=8.16.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.8.16.0\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=8.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.8.22.0\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Logging, Version=8.16.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Logging.8.16.0\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=8.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.8.22.0\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.IdentityModel.Tokens, Version=8.16.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.8.16.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=8.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.8.22.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -143,30 +149,33 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.OracleClient" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.10.0.5\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.10.0.11\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Formats.Asn1, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Formats.Asn1.10.0.5\lib\net462\System.Formats.Asn1.dll</HintPath>
+    <Reference Include="System.Formats.Asn1, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Formats.Asn1.10.0.11\lib\net462\System.Formats.Asn1.dll</HintPath>
     </Reference>
-    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=8.16.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.8.16.0\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=8.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.8.22.0\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
     <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Pipelines, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Pipelines.10.0.5\lib\net462\System.IO.Pipelines.dll</HintPath>
+    <Reference Include="System.IO.Pipelines, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.10.0.11\lib\net462\System.IO.Pipelines.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WinHttpHandler, Version=10.0.0.11, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.WinHttpHandler.10.0.11\lib\net462\System.Net.Http.WinHttpHandler.dll</HintPath>
+    </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
@@ -200,16 +209,16 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Security.Cryptography.Xml, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.Cryptography.Xml.10.0.5\lib\net462\System.Security.Cryptography.Xml.dll</HintPath>
+    <Reference Include="System.Security.Cryptography.Xml, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Xml.10.0.11\lib\net462\System.Security.Cryptography.Xml.dll</HintPath>
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Text.Encodings.Web, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encodings.Web.10.0.5\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    <Reference Include="System.Text.Encodings.Web, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.10.0.11\lib\net462\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Json, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.10.0.5\lib\net462\System.Text.Json.dll</HintPath>
+    <Reference Include="System.Text.Json, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.10.0.11\lib\net462\System.Text.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
@@ -223,14 +232,14 @@
     <Reference Include="Unimake.AuthServer, Version=2025.7.7.1650, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Unimake.AuthServer.20250707.1650.48\lib\netstandard2.0\Unimake.AuthServer.dll</HintPath>
     </Reference>
-    <Reference Include="Unimake.Cryptography, Version=2026.3.23.1046, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unimake.Cryptography.20260323.1046.36\lib\netstandard2.0\Unimake.Cryptography.dll</HintPath>
+    <Reference Include="Unimake.Cryptography, Version=2026.8.26.2146, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unimake.Cryptography.20260826.2146.14\lib\netstandard2.0\Unimake.Cryptography.dll</HintPath>
     </Reference>
-    <Reference Include="Unimake.EBank.Solutions, Version=2026.3.16.1928, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unimake.EBank.Solutions.20260316.1928.7\lib\netstandard2.0\Unimake.EBank.Solutions.dll</HintPath>
+    <Reference Include="Unimake.EBank.Solutions, Version=2026.8.3.1706, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unimake.EBank.Solutions.20260803.1706.20\lib\netstandard2.0\Unimake.EBank.Solutions.dll</HintPath>
     </Reference>
-    <Reference Include="Unimake.Extensions, Version=2026.3.23.1046, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unimake.Extensions.20260323.1046.36\lib\netstandard2.0\Unimake.Extensions.dll</HintPath>
+    <Reference Include="Unimake.Extensions, Version=2026.8.26.2146, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unimake.Extensions.20260826.2146.14\lib\netstandard2.0\Unimake.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Unimake.MessageBroker, Version=2025.10.16.36, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Unimake.MessageBroker.20251016.36.37\lib\netstandard2.0\Unimake.MessageBroker.dll</HintPath>
@@ -238,11 +247,11 @@
     <Reference Include="Unimake.MessageBroker.Primitives, Version=2025.6.23.1022, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Unimake.MessageBroker.Primitives.20250623.1022.24\lib\netstandard2.0\Unimake.MessageBroker.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="Unimake.Primitives, Version=2026.3.23.1046, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unimake.Primitives.20260323.1046.36\lib\netstandard2.0\Unimake.Primitives.dll</HintPath>
+    <Reference Include="Unimake.Primitives, Version=2026.8.26.2146, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unimake.Primitives.20260826.2146.14\lib\netstandard2.0\Unimake.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="Unimake.Utils, Version=2026.3.23.1046, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unimake.Utils.20260323.1046.36\lib\netstandard2.0\Unimake.Utils.dll</HintPath>
+    <Reference Include="Unimake.Utils, Version=2026.8.26.2146, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unimake.Utils.20260826.2146.14\lib\netstandard2.0\Unimake.Utils.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -252,29 +261,44 @@
   <PropertyGroup Condition="'$(Configuration)' != 'Release' and '$(DFeProjectConfiguration)' == ''">
     <DFeProjectConfiguration>$(Configuration)</DFeProjectConfiguration>
   </PropertyGroup>
-  <Choose>
-    <When Condition="'$(Configuration)' == 'Release'">
-      <ItemGroup>
-        <Reference Include="Unimake.Business.DFe, Version=2026.3.20.1003, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>..\packages\Unimake.DFe.20260320.1003.51\lib\net472\Unimake.Business.DFe.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <ProjectReference Include="..\..\..\Unimake.DFe\source\.NET Standard\Unimake.Business.DFe\Unimake.Business.DFe.csproj">
-          <Name>Unimake.Business.DFe</Name>
-          <Properties>Configuration=$(DFeProjectConfiguration);Platform=$(Platform);TargetFramework=netstandard2.0</Properties>
-          <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-          <Private>true</Private>
-        </ProjectReference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
+	<Choose>
+		<When Condition="'$(Configuration)' == 'Release'">
+			<ItemGroup>				
+				<Reference Include="Unimake.Business.DFe, Version=2026.9.8.1441, Culture=neutral, processorArchitecture=MSIL">
+				  <HintPath>..\packages\Unimake.DFe.20260908.1441.34\lib\net472\Unimake.Business.DFe.dll</HintPath>
+				</Reference>				
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<ProjectReference Include="..\..\..\Unimake.DFe\source\.NET Standard\Unimake.Business.DFe\Unimake.Business.DFe.csproj">
+					<Name>Unimake.Business.DFe</Name>
+					<Properties>Configuration=$(DFeProjectConfiguration);Platform=$(Platform);TargetFramework=netstandard2.0</Properties>
+					<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+					<Private>true</Private>
+				</ProjectReference>
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
   <ItemGroup>
+    <Compile Include="ApiExceptionHelper.cs" />
+    <Compile Include="AuthApiScopeHelper.cs" />
     <Compile Include="CCG\TaskCcgConsGTIN.cs" />
+    <Compile Include="CIOT\TaskCIOTBase.cs" />
+    <Compile Include="CIOT\TaskCIOTCancelamentoOperacaoTransporte.cs" />
+    <Compile Include="CIOT\TaskCIOTConsultarCIOTGerado.cs" />
+    <Compile Include="CIOT\TaskCIOTConsultarExcecao.cs" />
+    <Compile Include="CIOT\TaskCIOTConsultarFrotaTransportador.cs" />
+    <Compile Include="CIOT\TaskCIOTConsultarSituacaoTransportador.cs" />
+    <Compile Include="CIOT\TaskCIOTDeclaracaoOperacaoTransporte.cs" />
+    <Compile Include="CIOT\TaskCIOTEncerramentoOperacaoTransporte.cs" />
+    <Compile Include="CIOT\TaskCIOTGerarIdOperacaoTransporte.cs" />
+    <Compile Include="CIOT\TaskCIOTGravarMotorista.cs" />
+    <Compile Include="CIOT\TaskCIOTGravarProprietario.cs" />
+    <Compile Include="CIOT\TaskCIOTGravarVeiculo.cs" />
+    <Compile Include="CIOT\TaskCIOTObterOperacaoTransportePdf.cs" />
+    <Compile Include="CIOT\TaskCIOTRetificacaoOperacaoTransporte.cs" />
     <Compile Include="Classes.cs" />
-    <Compile Include="CTe\TaskAssinarValidarCTe.cs" />
     <Compile Include="CTe\TaskConsultaStatusCTe.cs" />
     <Compile Include="CTe\TaskCTeRecepcaoOS.cs" />
     <Compile Include="CTe\TaskCTeRecepcaoSimp.cs" />
@@ -283,8 +307,12 @@
     <Compile Include="CTe\TaskConsultaSituacaoCTe.cs" />
     <Compile Include="DARE\TaskConsultasReceitasDARE.cs" />
     <Compile Include="DARE\TaskRecepcaoDARE.cs" />
+    <Compile Include="DCe\TaskConsultarSituacaoDCe.cs" />
+    <Compile Include="DCe\TaskConsultarStatusDCe.cs" />
+    <Compile Include="DCe\TaskDCeEvento.cs" />
     <Compile Include="DFe\TaskRecepcaoDFeCTe.cs" />
     <Compile Include="DFe\TaskRecepcaoDFe.cs" />
+    <Compile Include="DiagnosticoDisponibilidadeDFeHelper.cs" />
     <Compile Include="eBoleto\TaskBoletoInformarPagto.cs" />
     <Compile Include="eBoleto\TaskBoletoEnviarInstrucao.cs" />
     <Compile Include="eBoleto\TaskBoletoAlterarVencto.cs" />
@@ -302,7 +330,12 @@
     <Compile Include="GNRE\TaskConsultaConfigUfGNRE.cs" />
     <Compile Include="GNRE\TaskConsultaResultadoLoteGNRE.cs" />
     <Compile Include="GNRE\TaskLoteRecepcaoGNRE.cs" />
-    <Compile Include="MDFe\TaskAssinarValidarMDFe.cs" />
+    <Compile Include="BPe\TaskBPeEventos.cs" />
+    <Compile Include="BPe\TaskBPeRecepcao.cs" />
+    <Compile Include="BPe\TaskBPeTARecepcao.cs" />
+    <Compile Include="BPe\TaskBPeTMRecepcao.cs" />
+    <Compile Include="BPe\TaskConsultaSituacaoBPe.cs" />
+    <Compile Include="BPe\TaskConsultaStatusBPe.cs" />
     <Compile Include="MDFe\TaskConsNaoEncMDFe.cs" />
     <Compile Include="MDFe\TaskConsultaSituacaoMDFe.cs" />
     <Compile Include="MDFe\TaskConsultaStatusMDFe.cs" />
@@ -316,9 +349,16 @@
     <Compile Include="NFCom\TaskConsultaStatusNFCom.cs" />
     <Compile Include="NFCom\TaskNFComEventos.cs" />
     <Compile Include="NFCom\TaskNFComRecepcaoSinc.cs" />
+    <Compile Include="NFGas\TaskConsultaSituacaoNFGas.cs" />
+    <Compile Include="NFGas\TaskConsultaStatusNFGas.cs" />
+    <Compile Include="NFGas\TaskNFGasEventos.cs" />
+    <Compile Include="NFGas\TaskNFGasRecepcaoSinc.cs" />
     <Compile Include="NFe\TaskDownloadNFCe.cs" />
     <Compile Include="NFe\TaskConsultaChavesNFCe.cs" />
     <Compile Include="NFSe\TaksConsultarConveioMunicipial.cs" />
+    <Compile Include="NFSe\ResolucaoCentralizadaNFSe.cs" />
+    <Compile Include="NFSe\TaskConsultaEventosNFSeChaveAcesso.cs" />
+    <Compile Include="NFSe\TaskConsultarDadosCadastrais.cs" />
     <Compile Include="NFSe\TaskConsultarDistribuicaoNSUNFSe.cs" />
     <Compile Include="NFSe\TaskConsultarEventosDiversosNfse.cs" />
     <Compile Include="NFSe\TaskConsultarAliquotaMunicipal.cs" />
@@ -327,6 +367,7 @@
     <Compile Include="NFSe\TaskConsultarRegimesEspeciais.cs" />
     <Compile Include="NFSe\TaskConsultarRetencoesMunicipais.cs" />
     <Compile Include="NFSe\TaskRecepcionarEventos.cs" />
+    <Compile Include="DCe\TaskDCeRecepcaoSinc.cs" />
     <Compile Include="uMessenger\TaskUMessenger.cs" />
     <Compile Include="NFe\ConverterTXT.cs" />
     <Compile Include="FluxoNfe.cs" />
@@ -338,6 +379,7 @@
     <Compile Include="NFSe\TaskConsultarNfseRecebidas.cs" />
     <Compile Include="NFSe\TaskSubstituirNfse.cs" />
     <Compile Include="NFSe\TaskConsultaSequenciaLoteNotaRPS.cs" />
+    <Compile Include="NFSe\TaskConsultarRpsDisponivel.cs" />
     <Compile Include="NFSe\TaskObterNotaFiscal.cs" />
     <Compile Include="NFSe\TaskConsultarNfsePDF.cs" />
     <Compile Include="NFSe\TaskInutilizarNfse.cs" />
@@ -370,6 +412,7 @@
     <Compile Include="TaskLayouts.cs" />
     <Compile Include="TaskValidar.cs" />
     <Compile Include="TFunctions.cs" />
+    <Compile Include="UniDanfe.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NFe.Components.Info\NFe.Components.Info.csproj">

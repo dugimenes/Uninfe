@@ -1,4 +1,4 @@
-﻿using NFe.Components;
+using NFe.Components;
 using NFe.Settings;
 using System;
 using Unimake.Business.DFe.Servicos;
@@ -37,6 +37,7 @@ namespace NFe.Service
         public override void Execute()
         {
             var emp = Empresas.FindEmpresaByThread();
+            Configuracao configuracao = null;
 
             try
             {
@@ -46,12 +47,14 @@ namespace NFe.Service
                 var xml = new ConsStatServCte();
                 xml = xml.LerXML<ConsStatServCte>(ConteudoXML);
 
-                var configuracao = new Configuracao
+                configuracao = new Configuracao
                 {
+                    PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
                     TipoDFe = TipoDFe.CTe,
                     CodigoUF = dadosPedSta.cUF,
                     TipoEmissao = (Unimake.Business.DFe.Servicos.TipoEmissao)dadosPedSta.tpEmis,
-                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado
+                    CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
+                    ColetarTelemetriaDisponibilidade = true
                 };
 
                 if(ConfiguracaoApp.Proxy)
@@ -69,6 +72,9 @@ namespace NFe.Service
                 XmlRetorno(Propriedade.Extensao(Propriedade.TipoEnvio.PedSta).EnvioXML, Propriedade.Extensao(Propriedade.TipoEnvio.PedSta).RetornoXML);
 
                 statusServico.Dispose();
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.PedSta).EnvioXML);
             }
             catch(Exception ex)
             {
@@ -84,6 +90,9 @@ namespace NFe.Service
                     //Se falhou algo na hora de gravar o retorno .ERR (de erro) para o ERP, infelizmente não posso fazer mais nada.
                     //Wandrey 09/03/2010
                 }
+
+                DiagnosticoDisponibilidadeDFeHelper.Gravar(emp, configuracao, NomeArquivoXML,
+                    Propriedade.Extensao(Propriedade.TipoEnvio.PedSta).EnvioXML);
             }
             finally
             {

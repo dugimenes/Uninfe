@@ -1,4 +1,4 @@
-Ôªøusing System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using Unimake.Business.DFe;
 using Unimake.Business.DFe.Servicos;
 
 namespace NFe.Components
@@ -17,11 +18,11 @@ namespace NFe.Components
         #region MemoryStream
 
         /// <summary>
-        /// M√©todo respons√°vel por converter uma String contendo a estrutura de um XML em uma Stream para
+        /// MÈtodo respons·vel por converter uma String contendo a estrutura de um XML em uma Stream para
         /// ser lida pela XMLDocument
         /// </summary>
         /// <returns>String convertida em Stream</returns>
-        /// <remarks>Conte√∫do do m√©todo foi fornecido pelo Marcelo da desenvolvedores.net</remarks>
+        /// <remarks>Conte˙do do mÈtodo foi fornecido pelo Marcelo da desenvolvedores.net</remarks>
         /// <by>Wandrey Mundin Ferreira</by>
         /// <date>20/04/2009</date>
         public static MemoryStream StringXmlToStream(string strXml)
@@ -127,48 +128,53 @@ namespace NFe.Components
 
         public static PadraoNFSe BuscaPadraoNFSe(int municipio)
         {
-            if (municipio < 100)
-            {
-                return PadraoNFSe.None;
-            }
-
-            PadraoNFSe BuscarNoCache()
-            {
-                var municipios = Propriedade.Municipios;
-                for (int i = 0; i < municipios.Count; i++)
-                {
-                    var mun = municipios[i];
-                    if (mun.CodigoMunicipio == municipio)
-                    {
-                        return mun.Padrao;
-                    }
-                }
-
-                return PadraoNFSe.None;
-            }
-
-            var result = BuscarNoCache();
-            if (result != PadraoNFSe.None)
-            {
-                return result;
-            }
-
-            // Algo falhou, n√£o deveria, vamos tentar recarregar os munic√≠pios.
-            Propriedade.Municipios.Clear();
-            CarregarMunicipio();
-
-            return BuscarNoCache();
+            return Configuration.GetPadraoNFSe(municipio);
         }
 
         #endregion PadraoNFe()
 
+        #region DefinirMunicipioPadraoNFSe()
+
+        public static int DefinirMunicipioPadraoNFSe(PadraoNFSe padraoNFSe, int municipio)
+        {
+            if (municipio == 4125506 || municipio == 2304400)
+            {
+                // Municipios pontuais com configuracao diferente:
+                // Sao Jose dos Pinhais - PR | GINFES
+                // Fortaleza - CE            | GINFES
+                return municipio;
+            }
+
+            switch (padraoNFSe)
+            {
+                case PadraoNFSe.ABASE:
+                    return 9999902;
+
+                case PadraoNFSe.EQUIPLANO:
+                    return 9999905;
+
+                case PadraoNFSe.GINFES:
+                    return 9999900;
+
+                case PadraoNFSe.WEBFISCO:
+                    return 9999904;
+
+                case PadraoNFSe.NACIONAL:
+                    return 1001058;
+
+                default:
+                    return municipio;
+            }
+        }
+
+        #endregion DefinirMunicipioPadraoNFSe()
         #region OnlyNumbers()
 
         /// <summary>
-        /// Remove caracteres n√£o-num√©ricos e retorna.
+        /// Remove caracteres n„o-numÈricos e retorna.
         /// </summary>
         /// <param name="text">valor a ser convertido</param>
-        /// <returns>somente n√∫meros com decimais</returns>
+        /// <returns>somente n˙meros com decimais</returns>
         public static object OnlyNumbers(object text)
         {
             var flagNeg = false;
@@ -205,11 +211,11 @@ namespace NFe.Components
         #region OnlyNumbers()
 
         /// <summary>
-        /// Remove caracteres n√£o-num√©ricos e retorna.
+        /// Remove caracteres n„o-numÈricos e retorna.
         /// </summary>
         /// <param name="text">valor a ser convertido</param>
         /// <param name="additionalChars">caracteres adicionais a serem removidos</param>
-        /// <returns>somente n√∫meros com decimais</returns>
+        /// <returns>somente n˙meros com decimais</returns>
         public static object OnlyNumbers(object text, string removeChars)
         {
             var ret = OnlyNumbers(text).ToString();
@@ -223,12 +229,72 @@ namespace NFe.Components
         }
 
         #endregion OnlyNumbers()
+        #region Normalizacao CNPJ/Chave DFe
+        /// <summary>
+        /// Normaliza CNPJ/CPF do emitente para comparacao com a chave DFe, preservando letras do CNPJ alfanumerico.
+        /// </summary>
+        /// <param name="valor">CNPJ ou CPF a ser normalizado.</param>
+        /// <returns>Documento sem mascara e em maiusculo.</returns>
+        public static string NormalizarCNPJCPFChaveDFe(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                return string.Empty;
+            }
+            var documento = valor.Trim().RemoveChars('/', '-', ',', '.', ' ').ToUpperInvariant();
+            if (documento.Length == 11 && documento.HasOnlyNumbers())
+            {
+                documento = documento.PadLeft(14, '0');
+            }
+            return documento;
+        }
+        /// <summary>
+        /// Normaliza chave DFe preservando letras do CNPJ alfanumerico.
+        /// </summary>
+        /// <param name="chave">Chave DFe com ou sem prefixo.</param>
+        /// <returns>Chave sem prefixo e em maiusculo.</returns>
+        public static string NormalizarChaveDFe(string chave)
+        {
+            if (string.IsNullOrWhiteSpace(chave))
+            {
+                return string.Empty;
+            }
+            var chaveNormalizada = chave.Trim().ToUpperInvariant();
+            var prefixos = new[] { "NFCOM", "NFGAS", "MDFE", "NF3E", "NFE", "CTE", "DCE" };
+            foreach (var prefixo in prefixos)
+            {
+                if (chaveNormalizada.StartsWith(prefixo))
+                {
+                    chaveNormalizada = chaveNormalizada.Substring(prefixo.Length);
+                    break;
+                }
+            }
+            return chaveNormalizada;
+        }
+        /// <summary>
+        /// Verifica se a chave DFe pertence a empresa configurada, considerando CNPJ alfanumerico.
+        /// </summary>
+        /// <param name="chave">Chave DFe.</param>
+        /// <param name="cnpjEmpresa">CNPJ/CPF configurado da empresa.</param>
+        /// <param name="codigoUF">Codigo da UF da empresa.</param>
+        /// <returns>True quando a chave pertence a empresa.</returns>
+        public static bool ChaveDFePertenceEmpresa(string chave, string cnpjEmpresa, int codigoUF)
+        {
+            var chaveNormalizada = NormalizarChaveDFe(chave);
+            if (chaveNormalizada.Length < 20)
+            {
+                return false;
+            }
+            return chaveNormalizada.Substring(6, 14) == NormalizarCNPJCPFChaveDFe(cnpjEmpresa) &&
+                   chaveNormalizada.Substring(0, 2) == codigoUF.ToString();
+        }
+        #endregion Normalizacao CNPJ/Chave DFe
 
         #region Gerar MD5
 
         public static string GerarMD5(string valor)
         {
-            // Cria uma nova int√¢ncia do objeto que implementa o algoritmo para
+            // Cria uma nova int‚ncia do objeto que implementa o algoritmo para
             // criptografia MD5
             var md5Hasher = System.Security.Cryptography.MD5.Create();
 
@@ -298,17 +364,17 @@ namespace NFe.Components
         #region ExtrairNomeArq()
 
         /// <summary>
-        /// Extrai o nome do arquivo de uma determinada string. Este n√£o mantem a pasta que ele est√° localizado, fica somente o nome do arquivo.
+        /// Extrai o nome do arquivo de uma determinada string. Este n„o mantem a pasta que ele est· localizado, fica somente o nome do arquivo.
         /// </summary>
-        /// <param name="arquivo">string contendo o caminho e nome do arquivo que √© para ser extra√≠do o conte√∫do desejado</param>
-        /// <param name="finalArq">string contendo o final do nome do arquivo que √© para ser retirado do nome</param>
-        /// <returns>Retorna somente o nome do arquivo de acordo com os par√¢metros passado</returns>
+        /// <param name="arquivo">string contendo o caminho e nome do arquivo que È para ser extraÌdo o conte˙do desejado</param>
+        /// <param name="finalArq">string contendo o final do nome do arquivo que È para ser retirado do nome</param>
+        /// <returns>Retorna somente o nome do arquivo de acordo com os par‚metros passado</returns>
         /// <example>
         /// MessageBox.Show(ExtrairNomeArq("C:\\TESTE\\NFE\\ENVIO\\ArqSituacao-ped-sta.xml", "-ped-sta.xml"));
-        /// //Ser√° demonstrado no message a string "ArqSituacao"
+        /// //Ser· demonstrado no message a string "ArqSituacao"
         ///
         /// MessageBox.Show(ExtrairNomeArq("C:\\TESTE\\NFE\\ENVIO\\ArqSituacao-ped-sta.xml", ".xml"));
-        /// //Ser√° demonstrado no message a string "ArqSituacao-ped-sta"
+        /// //Ser· demonstrado no message a string "ArqSituacao-ped-sta"
         /// </example>
         public static string ExtrairNomeArq(string arquivo, string finalArq)
         {
@@ -343,7 +409,7 @@ namespace NFe.Components
              */
 
             ///
-            /// pesquisa primeiro pela lista de retornos, porque geralmente os nomes s√£o maiores que os de envio
+            /// pesquisa primeiro pela lista de retornos, porque geralmente os nomes s„o maiores que os de envio
             /// isso evita conflito de nomes como por ex: -cons-cad.xml x -ret-cons-cad.xml
             ///
             foreach (var pS in typeof(Propriedade.ExtRetorno).GetFields(BindingFlags.Public | BindingFlags.Static))
@@ -364,7 +430,7 @@ namespace NFe.Components
                     var EXT = Propriedade.Extensao(item);
 
                     ///
-                    /// pesquisa primeiro pelas extens√µes de retorno, pois geralmente, elas s√£o maiores que as de envio
+                    /// pesquisa primeiro pelas extensıes de retorno, pois geralmente, elas s„o maiores que as de envio
                     ///
                     if (!string.IsNullOrEmpty(EXT.RetornoXML))
                     {
@@ -466,7 +532,7 @@ namespace NFe.Components
         #region FileInUse()
 
         /// <summary>
-        /// detectar se o arquivo est√° em uso
+        /// detectar se o arquivo est· em uso
         /// </summary>
         /// <param name="file">caminho do arquivo</param>
         /// <returns>true se estiver em uso</returns>
@@ -480,7 +546,7 @@ namespace NFe.Components
             {
                 using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    fs.Close();//fechar o arquivo para nao dar erro em outras aplica√ß√µes
+                    fs.Close();//fechar o arquivo para nao dar erro em outras aplicaÁıes
                 }
             }
             catch
@@ -496,11 +562,11 @@ namespace NFe.Components
         #region LerTag()
 
         /// <summary>
-        /// Busca o nome de uma determinada TAG em um Elemento do XML para ver se existe, se existir retorna seu conte√∫do com um ponto e v√≠rgula no final do conte√∫do.
+        /// Busca o nome de uma determinada TAG em um Elemento do XML para ver se existe, se existir retorna seu conte˙do com um ponto e vÌrgula no final do conte˙do.
         /// </summary>
         /// <param name="Elemento">Elemento a ser pesquisado o Nome da TAG</param>
         /// <param name="NomeTag">Nome da Tag</param>
-        /// <returns>Conte√∫do da tag</returns>
+        /// <returns>Conte˙do da tag</returns>
         /// <date>05/08/2009</date>
         /// <by>Wandrey Mundin Ferreira</by>
         public static string LerTag(XmlElement Elemento, string NomeTag) => LerTag(Elemento, NomeTag, true);
@@ -510,12 +576,12 @@ namespace NFe.Components
         #region LerTag()
 
         /// <summary>
-        /// Busca o nome de uma determinada TAG em um Elemento do XML para ver se existe, se existir retorna seu conte√∫do, com ou sem um ponto e v√≠rgula no final do conte√∫do.
+        /// Busca o nome de uma determinada TAG em um Elemento do XML para ver se existe, se existir retorna seu conte˙do, com ou sem um ponto e vÌrgula no final do conte˙do.
         /// </summary>
         /// <param name="Elemento">Elemento a ser pesquisado o Nome da TAG</param>
         /// <param name="NomeTag">Nome da Tag</param>
-        /// <param name="RetornaPontoVirgula">Retorna com ponto e v√≠rgula no final do conte√∫do da tag</param>
-        /// <returns>Conte√∫do da tag</returns>
+        /// <param name="RetornaPontoVirgula">Retorna com ponto e vÌrgula no final do conte˙do da tag</param>
+        /// <returns>Conte˙do da tag</returns>
         /// <date>05/08/2009</date>
         /// <by>Wandrey Mundin Ferreira</by>
         public static string LerTag(XmlElement Elemento, string NomeTag, bool RetornaPontoVirgula)
@@ -552,7 +618,7 @@ namespace NFe.Components
         #endregion LerTag()
 
         /// <summary>
-        /// Verifica a conex√£o com a internet e retorna verdadeiro se conectado com sucesso
+        /// Verifica a conex„o com a internet e retorna verdadeiro se conectado com sucesso
         /// </summary>
         /// <returns></returns>
         public static bool HasInternetConnection(bool temProxy, string proxyServidor, string proxyUsuario, string proxySenha, int proxyPorta, bool proxyDetectarAutomaticamente = false) => Unimake.Net.Utility.HasInternetConnection((temProxy ? Unimake.Net.Utility.GetProxy(proxyServidor, proxyUsuario, proxySenha, proxyPorta, proxyDetectarAutomaticamente) : null));
@@ -593,45 +659,18 @@ namespace NFe.Components
         }
 
         /// <summary>
-        /// Carrega os munic√≠pios do arquivo de configura√ß√£o na lista de munic√≠pios
+        /// Carrega os municÌpios do arquivo de configuraÁ„o na lista de municÌpios
         /// </summary>
         public static void CarregarMunicipio()
         {
             if (Propriedade.Municipios == null)
             {
-                Propriedade.Municipios = new List<Municipio>();
+                Propriedade.Municipios = new List<MunicipioNFSeConfiguracao>();
             }
 
             if (Propriedade.Municipios.Count <= 0)
             {
-                var doc = new XmlDocument();
-                var config = new Configuracao();
-
-                using (var stream = config.LoadXmlConfig(Unimake.Business.DFe.Configuration.ArquivoConfigGeral))
-                {
-                    doc.Load(stream);
-                }
-
-                var arquivoList = doc.GetElementsByTagName("Arquivo");
-                foreach (XmlElement elemento in arquivoList)
-                {
-                    var idAttr = elemento.GetAttribute("ID");
-                    if (idAttr.Length >= 3)
-                    {
-                        int id = Convert.ToInt32(idAttr);
-                        string nome = elemento.GetElementsByTagName("Nome")[0].InnerText;
-                        string uf = elemento.GetElementsByTagName("UF")[0].InnerText;
-                        string padraoStr = elemento.GetElementsByTagName("PadraoNFSe")[0].InnerText.ToUpper();
-                        var padrao = (PadraoNFSe)Enum.Parse(typeof(PadraoNFSe), padraoStr, true);
-
-                        if (padrao == PadraoNFSe.None)
-                        {
-                            WriteLog($"CarregarMunicipio() - Padr√£o NFSe n√£o encontrado para o munic√≠pio: {nome}.", true, true, "");
-                        }
-
-                        Propriedade.Municipios.Add(new Municipio(id, uf, nome, padrao));
-                    }
-                }
+                Propriedade.Municipios = Configuration.CarregarMunicipio();
             }
         }
 
@@ -656,9 +695,9 @@ namespace NFe.Components
          */
 
         /// <summary>
-        /// Retorna o endere√ßo IP desta esta√ß√£o
+        /// Retorna o endereÁo IP desta estaÁ„o
         /// </summary>
-        /// <returns>Endere√ßo ip da esta√ß√£o</returns>
+        /// <returns>EndereÁo ip da estaÁ„o</returns>
         public static string GetIPAddress()
         {
             var hostEntry = Dns.GetHostEntry(Environment.MachineName);
@@ -841,13 +880,13 @@ namespace NFe.Components
                 }
                 else
                     if (origem.GetType().IsAssignableFrom(typeof(List<string>)))
-                {
-                    lEncontrou = populateClasse(classe, (origem as List<string>).ToArray());
-                }
-                else
-                {
-                    throw new Exception("Tipo de dados da origem desconhecido. (" + origem.GetType().ToString() + ")");
-                }
+                    {
+                        lEncontrou = populateClasse(classe, (origem as List<string>).ToArray());
+                    }
+                    else
+                    {
+                        throw new Exception("Tipo de dados da origem desconhecido. (" + origem.GetType().ToString() + ")");
+                    }
             }
             return lEncontrou;
         }
@@ -919,7 +958,7 @@ namespace NFe.Components
 #endif
 
                         arquivoWS = new StreamWriter(fileName, true, Encoding.UTF8);
-                        arquivoWS.WriteLine(DateTime.Now.ToLongTimeString() + " - [Vers√£o UniNFe" + (versaoBeta ? " (BETA)" : "") + ": " + Propriedade.Versao + "] - " + msg);
+                        arquivoWS.WriteLine(DateTime.Now.ToLongTimeString() + " - [Vers„o UniNFe" + (versaoBeta ? " (BETA)" : "") + ": " + Propriedade.Versao + "] - " + msg);
                         arquivoWS.Flush();
                         arquivoWS.Close();
                         break;
@@ -931,7 +970,7 @@ namespace NFe.Components
                             arquivoWS.Close();
                         }
 
-                        if (elapsedMillieconds >= 60000) //60.000 ms que corresponde √° 60 segundos que corresponde a 1 minuto
+                        if (elapsedMillieconds >= 60000) //60.000 ms que corresponde · 60 segundos que corresponde a 1 minuto
                         {
                             break;
                         }

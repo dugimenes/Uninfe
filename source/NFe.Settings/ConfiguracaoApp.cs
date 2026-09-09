@@ -1,11 +1,8 @@
-﻿using NFe.Components;
+using NFe.Components;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -127,115 +124,11 @@ namespace NFe.Settings
             return extraido;
         }
 
-        #region Extrae os arquivos necessarios a executacao
-
-        internal class loadResources
-        {
-#if DEBUG
-            private string cErros { get; set; }
-#endif
-
-            /// <summary>
-            /// Exporta os WSDLs e Schemas da DLL para as pastas do UniNFe
-            /// </summary>
-            public void load()
-            {
-                Propriedade.Estados = null;
-
-#if DEBUG
-                if (Empresas.Configuracoes.Count == 0)
-                {
-                    ConfiguracaoApp.GravarLogOperacoesRealizadas = true;
-                }
-
-                try
-                {
-                    var ass = Assembly.LoadFile(Propriedade.PastaExecutavel + "\\NFe.Components.Wsdl.dll");
-                    var x = ass.GetManifestResourceNames();
-                    if (x.GetLength(0) > 0)
-                    {
-                        string fileoutput = null;
-                        var okFiles = new List<string>();
-
-                        var afiles = (from d in x
-                                      where d.StartsWith("NFe.Components.Wsdl.NF")
-                                      select d);
-
-                        foreach (var s in afiles)
-                        {
-                            fileoutput = s.Replace("NFe.Components.Wsdl.", Propriedade.PastaExecutavel + "\\");
-                            if (fileoutput == null)
-                            {
-                                continue;
-                            }
-
-                            if (fileoutput.ToLower().EndsWith(".xsd"))
-                            {
-                                /// Ex: NFe.Components.Wsdl.NFe.NFe.xmldsig-core-schema_v1.01.xsd
-                                ///
-                                /// pesquisa pelo nome do XSD
-                                var plast = fileoutput.ToLower().LastIndexOf("_v");
-                                if (plast == -1)
-                                {
-                                    plast = fileoutput.IndexOf(".xsd") - 1;
-                                }
-
-                                while (fileoutput[plast] != '.' && plast >= 0)
-                                {
-                                    --plast;
-                                }
-
-                                var fn = fileoutput.Substring(plast + 1);
-                                fileoutput = fileoutput.Substring(0, plast).Replace(".", "\\") + "\\" + fn;
-                            }
-                            else
-                            {
-                                fileoutput = (fileoutput.Substring(0, fileoutput.LastIndexOf('.')) + "####" +
-                                                fileoutput.Substring(fileoutput.LastIndexOf('.') + 1)).Replace(".", "\\").Replace("####", ".");
-                            }
-
-                            ExtractResourceToDisk(ass, s, fileoutput);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    var xMotivo = "Não foi possível atualizar pacotes de Schemas/WSDLs.";
-
-                    Auxiliar.WriteLog(cErros = xMotivo + Environment.NewLine + ex.Message, false, true);
-
-                    if (Empresas.Configuracoes.Count > 0)
-                    {
-                        var emp = Empresas.FindEmpresaByThread();
-                        var oAux = new Auxiliar();
-                        oAux.GravarArqErroERP(Empresas.Configuracoes[emp].CNPJ + ".err", cErros);
-                    }
-                }
-#endif
-            }
-        }
-
-        #endregion Extrae os arquivos necessarios a executacao
-
         #region StartVersoes
 
         public static void StartVersoes()
         {
             ConfiguracaoApp.CarregarDados();
-
-            new loadResources().load();
-
-            try
-            {
-                SchemaXML.CriarListaIDXML();
-            }
-            catch (Exception ex)
-            {
-                ///
-                /// essa mensagem nunca será exibida ao usuário, porque se ela for exibida, você terá que ajustar
-                ///
-                MessageBox.Show(ex.Message + "\r\n" + ex.StackTrace);
-            }
         }
 
         #endregion StartVersoes
@@ -613,6 +506,9 @@ namespace NFe.Settings
 
                         case TipoAplicativo.NF3e:
                         case TipoAplicativo.NFCom:
+                        case TipoAplicativo.NFGas:
+                        case TipoAplicativo.BPe:
+                        case TipoAplicativo.CIOT:
                             _xValids.Add(new xValid(empresa.PastaXmlEnvio, "Informe a pasta de envio dos arquivos XML.", "A pasta de envio dos arquivos XML informada não existe.", true));
                             _xValids.Add(new xValid(empresa.PastaXmlRetorno, "Informe a pasta de envio dos arquivos XML.", "A pasta de retorno dos arquivos XML informada não existe.", true));
                             _xValids.Add(new xValid(empresa.PastaXmlErro, "Informe a pasta para arquivamento temporário dos arquivos XML que apresentaram erros.", "A pasta para arquivamento temporário dos arquivos XML com erro informada não existe.", true));
@@ -1209,27 +1105,13 @@ namespace NFe.Settings
                         //Se o certificado digital for o instalado no windows, vamos tentar buscar ele no repositório para ver se existe.
                         if (Empresas.Configuracoes[emp].CertificadoInstalado)
                         {
-                            var oX509Cert = new X509Certificate2();
-                            var store = new X509Store("MY", StoreLocation.CurrentUser);
-                            store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                            var collection = store.Certificates;
-                            var collection1 = collection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
-                            var collection2 = collection.Find(X509FindType.FindByKeyUsage, X509KeyUsageFlags.DigitalSignature, false);
-
-                            //Primeiro tento encontrar pelo thumbprint
-                            var collection3 = collection2.Find(X509FindType.FindByThumbprint, Empresas.Configuracoes[emp].CertificadoDigitalThumbPrint, false);
-                            if (collection3.Count <= 0)
+                            Empresas.Configuracoes[emp].X509Certificado = Empresas.Configuracoes[emp].BuscaConfiguracaoCertificado();
+                            if (Empresas.Configuracoes[emp].X509Certificado == null)
                             {
-                                //Se não encontrou pelo thumbprint tento pelo SerialNumber pegando o mesmo thumbprint que veio no arquivo de configurações para ver se não encontro.
-                                collection3 = collection2.Find(X509FindType.FindBySerialNumber, Empresas.Configuracoes[emp].CertificadoDigitalThumbPrint, false);
-
-                                if (collection3.Count <= 0)
-                                {
-                                    throw new Exception("Certificado digital informado não foi localizado no repositório do windows.");
-                                }
-
-                                Empresas.Configuracoes[emp].CertificadoDigitalThumbPrint = collection3[0].Thumbprint;
+                                throw new Exception("Certificado digital válido, com chave privada para assinatura, não foi localizado no repositório do Windows.");
                             }
+
+                            Empresas.Configuracoes[emp].CertificadoDigitalThumbPrint = Empresas.Configuracoes[emp].X509Certificado.Thumbprint;
                         }
                         else
                         {
@@ -1655,7 +1537,10 @@ namespace NFe.Settings
                                                           EnumHelper.GetDescription(TipoAplicativo.GNREeDARE),
                                                           EnumHelper.GetDescription(TipoAplicativo.Todos),
                                                           EnumHelper.GetDescription(TipoAplicativo.NF3e),
-                                                          EnumHelper.GetDescription(TipoAplicativo.NFCom)));
+                                                          EnumHelper.GetDescription(TipoAplicativo.NFCom),
+                                                          EnumHelper.GetDescription(TipoAplicativo.NFGas),
+                                                          EnumHelper.GetDescription(TipoAplicativo.BPe),
+                                                          EnumHelper.GetDescription(TipoAplicativo.CIOT)));
                     }
 
                     ///
@@ -1679,7 +1564,10 @@ namespace NFe.Settings
                             (int)TipoAplicativo.GNREeDARE, EnumHelper.GetDescription(TipoAplicativo.GNREeDARE),
                             (int)TipoAplicativo.Todos, EnumHelper.GetDescription(TipoAplicativo.Todos),
                             (int)TipoAplicativo.NF3e, EnumHelper.GetDescription(TipoAplicativo.NF3e),
-                            (int)TipoAplicativo.NFCom, EnumHelper.GetDescription(TipoAplicativo.NFCom)));
+                            (int)TipoAplicativo.NFCom, EnumHelper.GetDescription(TipoAplicativo.NFCom),
+                            (int)TipoAplicativo.NFGas, EnumHelper.GetDescription(TipoAplicativo.NFGas),
+                            (int)TipoAplicativo.BPe, EnumHelper.GetDescription(TipoAplicativo.BPe),
+                            (int)TipoAplicativo.CIOT, EnumHelper.GetDescription(TipoAplicativo.CIOT)));
                     }
                 }
                 if (Empresas.FindConfEmpresa(cnpj.Trim(), (TipoAplicativo)Convert.ToInt16(servico)) == null)
@@ -1729,11 +1617,12 @@ namespace NFe.Settings
 
                 if (lConsultar)
                 {
-                    var store = new X509Store("MY", StoreLocation.CurrentUser);
-                    store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                    var collection = store.Certificates;
-                    var collection1 = collection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
-                    var collection2 = collection.Find(X509FindType.FindByKeyUsage, X509KeyUsageFlags.DigitalSignature, false);
+                    using (var store = new X509Store("MY", StoreLocation.CurrentUser))
+                    {
+                        store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+                        var collection = store.Certificates;
+                        var collection1 = collection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
+                        var collection2 = collection1.Find(X509FindType.FindByKeyUsage, X509KeyUsageFlags.DigitalSignature, false);
 
                     #region Cria XML de retorno
 
@@ -1755,6 +1644,10 @@ namespace NFe.Settings
 
                     for (var i = 0; i < collection2.Count; i++)
                     {
+                        if (!collection2[i].HasPrivateKey)
+                        {
+                            continue;
+                        }
                         #region layout retorno
 
                         /*layout de retorno - Renan Borges
@@ -1855,6 +1748,7 @@ namespace NFe.Settings
                     }
 
                     #endregion Monta XML de retorno com os certificados do tipo A1 que estão configurados no UniNFe com base no arquivo .PFX
+                    }
                 }
             }
             catch (Exception ex)
@@ -1998,10 +1892,10 @@ namespace NFe.Settings
         }
 
         /// <summary>
-        /// Extrair CNPJ e CPF do certificado
+        /// Extrair CNPJ ou CPF do certificado
         /// </summary>
         /// <param name="certificado">Subject do certificado</param>
-        /// <returns>Objeto contendo CPF e/ou CNPJ encontrados</returns>
+        /// <returns>Objeto contendo CPF ou CNPJ encontrado</returns>
         private DocumentosCertificado ExtrairCNPJCPFCertificado(string certificado)
         {
             var resultado = new DocumentosCertificado();
@@ -2013,64 +1907,32 @@ namespace NFe.Settings
 
             try
             {
-                var doisDocumentosMatch = Regex.Match(certificado, @"([a-zA-Z0-9]{11,14})[:\s]([a-zA-Z0-9]{11,14})");
-                if (doisDocumentosMatch.Success)
+                var cnpjMatch = Regex.Match(certificado, @"(?<![a-zA-Z0-9])([a-zA-Z0-9]{12}\d{2})(?![a-zA-Z0-9])");
+                if (cnpjMatch.Success)
                 {
-                    var doc1 = doisDocumentosMatch.Groups[1].Value.ToUpper();
-                    var doc2 = doisDocumentosMatch.Groups[2].Value.ToUpper();
-
-                    if (doc1.Length == 11 && doc2.Length == 14)
-                    {
-                        resultado.CPF = doc1;
-                        resultado.CNPJ = doc2;
-                        return resultado;
-                    }
-                    else if (doc1.Length == 14 && doc2.Length == 11)
-                    {
-                        resultado.CNPJ = doc1;
-                        resultado.CPF = doc2;
-                        return resultado;
-                    }
-                    else if (doc1.Length == 14 && doc2.Length == 14)
-                    {
-                        resultado.CNPJ = doc1;
-                        return resultado;
-                    }
-                    else if (doc1.Length == 11 && doc2.Length == 11)
-                    {
-                        resultado.CPF = doc1;
-                        return resultado;
-                    }
+                    resultado.CNPJ = cnpjMatch.Groups[1].Value.ToUpper();
+                    return resultado;
                 }
 
-                if (string.IsNullOrEmpty(resultado.CNPJ) && string.IsNullOrEmpty(resultado.CPF))
+                var cnpjSemZeroInicialMatch = Regex.Match(certificado, @"(?<![a-zA-Z0-9])(\d{13})(?![a-zA-Z0-9])");
+                if (cnpjSemZeroInicialMatch.Success)
                 {
-                    var cnpjMatch = Regex.Match(certificado, @"\b([a-zA-Z0-9]{14})\b");
-                    if (cnpjMatch.Success)
-                    {
-                        resultado.CNPJ = cnpjMatch.Groups[1].Value;
-                    }
-
-                    if (string.IsNullOrEmpty(resultado.CNPJ))
-                    {
-                        var cpfMatch = Regex.Match(certificado, @"\b(\d{11})\b");
-                        if (cpfMatch.Success)
-                        {
-                            resultado.CPF = cpfMatch.Groups[1].Value;
-                        }
-                    }
+                    resultado.CNPJ = cnpjSemZeroInicialMatch.Groups[1].Value.PadLeft(14, '0');
+                    return resultado;
                 }
 
-                if (!string.IsNullOrEmpty(resultado.CNPJ) && string.IsNullOrEmpty(resultado.CPF))
+                var cpfMatch = Regex.Match(certificado, @"(?<![a-zA-Z0-9])(\d{11})(?![a-zA-Z0-9])");
+                if (cpfMatch.Success)
                 {
-                    var cpfMatch = Regex.Match(certificado, @"\b(\d{11})\b");
-                    if (cpfMatch.Success)
-                    {
-                        if (!resultado.CNPJ.Contains(cpfMatch.Groups[1].Value))
-                        {
-                            resultado.CPF = cpfMatch.Groups[1].Value;
-                        }
-                    }
+                    resultado.CPF = cpfMatch.Groups[1].Value;
+                    return resultado;
+                }
+
+                var cpfSemZeroInicialMatch = Regex.Match(certificado, @"(?<![a-zA-Z0-9])(\d{10})(?![a-zA-Z0-9])");
+                if (cpfSemZeroInicialMatch.Success)
+                {
+                    resultado.CPF = cpfSemZeroInicialMatch.Groups[1].Value.PadLeft(11, '0');
+                    return resultado;
                 }
             }
             catch
@@ -2094,7 +1956,7 @@ namespace NFe.Settings
                 return false;
             }
 
-            cnpj1 = Regex.Replace(cnpj1, @"[^a-zA-Z0-9]]", "");
+            cnpj1 = Regex.Replace(cnpj1, @"[^a-zA-Z0-9]", "");
             cnpj2 = Regex.Replace(cnpj2, @"[^a-zA-Z0-9]", "");
 
             if (cnpj1.Length != 14 || cnpj2.Length != 14)

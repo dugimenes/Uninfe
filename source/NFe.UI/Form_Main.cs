@@ -2,12 +2,14 @@
 using NFe.Components;
 using NFe.Settings;
 using NFe.Threadings;
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NFe.UI
@@ -20,6 +22,7 @@ namespace NFe.UI
         private menu _menu;
         private bool _maximized;
         private bool _formloaded = false;
+        private bool _encerramentoExecutado = false;
 
         public Form_Main()
         {
@@ -27,6 +30,8 @@ namespace NFe.UI
 
             uninfeDummy.mainForm = this;
             uninfeDummy.UltimoAcessoConfiguracao = DateTime.MinValue;
+
+            SystemEvents.SessionEnding += SystemEvents_SessionEnding;
         }
 
         private void EnsureMenu()
@@ -48,26 +53,6 @@ namespace NFe.UI
             var error = false;
             try
             {
-                #region Antes de inicializar serviços temos que rodar o update para atualizar, assim nem iniciou nenhum processamento.
-
-                if (ConfiguracaoApp.ManterAtualizado && !ConfiguracaoApp.ExecutadoModoSilencioso)
-                {
-                    IWebProxy proxy = null;
-
-                    if (ConfiguracaoApp.Proxy)
-                    {
-                        proxy = Unimake.Net.Utility.GetProxy(ConfiguracaoApp.ProxyServidor,
-                            ConfiguracaoApp.ProxyUsuario,
-                            ConfiguracaoApp.ProxySenha,
-                            ConfiguracaoApp.ProxyPorta,
-                            ConfiguracaoApp.DetectarConfiguracaoProxyAuto);
-                    }
-
-                    new UniNFeUpdate(proxy).VerificaVersao();
-                }
-
-                #endregion
-
                 //
                 //SERVICO: danasa 7/2011
                 //servico está instalado e rodando?
@@ -114,11 +99,9 @@ namespace NFe.UI
                     new ThreadControlEvents();  //danasa 12/8/2011
                 }
 
-                //Executar os serviços do UniNFe em novas threads
-                //Tem que ser carregado depois que o formulário da MainForm estiver totalmente carregado para evitar Erros. Wandrey 19/10/2010
-                ExecutaServicos();
-
                 ThreadService.NotifyIconUniNFe = notifyIcon1;
+
+                VerificaAtualizacaoAutomatica();
             }
             finally
             {
@@ -126,6 +109,90 @@ namespace NFe.UI
                 {
                     updateControleDoServico();
                 }
+            }
+        }
+
+        private void VerificaAtualizacaoAutomatica()
+        {
+            if (!ConfiguracaoApp.ManterAtualizado || ConfiguracaoApp.ExecutadoModoSilencioso)
+            {
+                IniciarServicosMonitor();
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    IWebProxy proxy = null;
+
+                    if (ConfiguracaoApp.Proxy)
+                    {
+                        proxy = Unimake.Net.Utility.GetProxy(ConfiguracaoApp.ProxyServidor,
+                            ConfiguracaoApp.ProxyUsuario,
+                            ConfiguracaoApp.ProxySenha,
+                            ConfiguracaoApp.ProxyPorta,
+                            ConfiguracaoApp.DetectarConfiguracaoProxyAuto);
+                    }
+
+                    var update = new UniNFeUpdate(proxy);
+                    update.VerificaVersao();
+
+                    if (!update.InstaladorIniciado)
+                    {
+                        IniciarServicosMonitor();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Auxiliar.WriteLog("Falha ao verificar atualização automática do UniNFe. " + ex.Message, true, true);
+                    AvisarFalhaAtualizacaoAutomatica();
+                    IniciarServicosMonitor();
+                }
+            });
+        }
+
+        private void IniciarServicosMonitor()
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(IniciarServicosMonitor));
+                return;
+            }
+
+            //Executar os serviços do UniNFe em novas threads
+            //Tem que ser carregado depois que o formulário da MainForm estiver totalmente carregado para evitar Erros.
+            ExecutaServicos();
+        }
+
+        private void AvisarFalhaAtualizacaoAutomatica()
+        {
+            if (IsDisposed || !notifyIcon1.Visible)
+            {
+                return;
+            }
+
+            try
+            {
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new Action(AvisarFalhaAtualizacaoAutomatica));
+                    return;
+                }
+
+                notifyIcon1.ShowBalloonTip(
+                    10000,
+                    "Atualização do UniNFe",
+                    "Não foi possível verificar atualizações. O Monitor iniciou normalmente.",
+                    ToolTipIcon.Warning);
+            }
+            catch
+            {
             }
         }
 
@@ -148,15 +215,8 @@ namespace NFe.UI
 
         protected override void OnClosed(EventArgs e)
         {
-            PararServicos(false);
-
-            /*
-                * Excluir os arquivos de ".lock"
-                *
-                * 05/06/2013
-                * Marcelo
-                */
-            Empresas.ClearLockFiles(false);
+            EncerrarAplicacao(false, "fechamento do aplicativo");
+            SystemEvents.SessionEnding -= SystemEvents_SessionEnding;
 
             foreach (var uc in Controls)
             {
@@ -166,6 +226,35 @@ namespace NFe.UI
                 }
             }
             base.OnClosed(e);
+        }
+
+        private void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
+        {
+            EncerrarAplicacao(false, "encerramento do Windows");
+        }
+
+        private void EncerrarAplicacao(bool fechaServico, string origem)
+        {
+            if (_encerramentoExecutado)
+            {
+                return;
+            }
+
+            _encerramentoExecutado = true;
+            Propriedade.EncerrarApp = true;
+
+            try
+            {
+                Auxiliar.WriteLog("Encerrando UniNFe por " + origem + ". Parando serviços e removendo arquivos .lock.", false, true);
+                PararServicos(fechaServico);
+                Empresas.ClearLockFiles(false);
+            }
+            catch (Exception ex)
+            {
+                Auxiliar.WriteLog("Falha ao encerrar UniNFe por " + origem + ": " + ex.Message, true, true);
+            }
+
+            notifyIcon1.Visible = false;
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

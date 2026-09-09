@@ -1,21 +1,15 @@
-﻿using EBank.Solutions.Primitives.Billet.Request;
 using NFe.Components;
 using NFe.Settings;
-using NFe.Validate;
 using System;
 using System.IO;
-using System.Text;
 using System.Xml;
-using Unimake.AuthServer.Security.Scope;
-using Unimake.EBank.Solutions.Services.Billet;
-using Unimake.Primitives.UDebug;
+using Unimake.Business.DFe.Servicos;
+using BoletoCancelarService = Unimake.Business.DFe.Servicos.EBoleto.BoletoCancelar;
 
 namespace NFe.Service
 {
     public class TaskBoletoInformarPagto : TaskAbst
     {
-        public static DebugScope<DebugStateObject> debugScope;
-
         public TaskBoletoInformarPagto(string arquivo)
         {
             Servico = Servicos.BoletoInformarPagto;
@@ -24,9 +18,11 @@ namespace NFe.Service
             ConteudoXML.Load(arquivo);
         }
 
-        public override async void Execute()
+        public override void Execute()
         {
             var emp = Empresas.FindEmpresaByThread();
+            var file = Functions.ExtrairNomeArq(NomeArquivoXML, Propriedade.Extensao(Propriedade.TipoEnvio.BoletoInformarPagto).EnvioXML) + Propriedade.Extensao(Propriedade.TipoEnvio.BoletoInformarPagto).RetornoXML;
+            var pathXml = Path.Combine(Empresas.Configuracoes[emp].PastaXmlRetorno, file);
 
             try
             {
@@ -35,158 +31,121 @@ namespace NFe.Service
                     throw new Exception("Para utilizar o serviço do eBoleto é necessário configurar no UniNFe o AppID e Secret do eBank.");
                 }
 
-                #region Validar o XML
-
-                var validarXML = new ValidarXML
-                {
-                    TipoArqXml = new TipoArquivoXML
-                    {
-                        cArquivoSchema = Path.Combine(Propriedade.PastaExecutavel, @"NFe\schemas\eBoleto\BoletoInformarPagto_1_00.xsd"),
-                        nRetornoTipoArq = 1
-                    }
-                };
-
-                validarXML.ValidarArqXML(ConteudoXML, NomeArquivoXML);
-                if (validarXML.Retorno != 0)
-                {
-                    throw new Exception(validarXML.RetornoString.Replace("\r\n", ""));
-                }
-
-                #endregion
-
-                #region Criar objeto de envio de instrução do boleto
-
-
-                var informPaymentRequest = new BaixarRequest
-                {
-                    ConfigurationId = TFunctions.GetXmlValue(ConteudoXML, "ConfigurationId"),
-                    Testing = TFunctions.GetXmlBoolValue(ConteudoXML, "Testing"),
-                    NumeroNoBanco = TFunctions.GetXmlValue(ConteudoXML, "NumeroNoBanco")
-                };
-
-                #endregion
-
-                #region Autenticar nas APIs da Unimake
-
-                var useHomologServer = false;
-
-                if (ConteudoXML.GetElementsByTagName("UseHomologServer").Count > 0)
-                {
-                    useHomologServer = Convert.ToBoolean(ConteudoXML.GetElementsByTagName("UseHomologServer")[0].InnerText);
-                }
-
-                debugScope = null;
-                if (useHomologServer)
-                {
-                    debugScope = new DebugScope<DebugStateObject>(new DebugStateObject
-                    {
-                        AuthServerUrl = "https://auth.sandbox.unimake.software/api/auth/",
-                        AnotherServerUrl = "https://ebank.sandbox.unimake.software/api/v1/"
-                    });
-                }
-
-                var authenticatedScope = new AuthenticatedScope(new Unimake.Primitives.Security.Credentials.AuthenticationToken
-                {
-                    AppId = Empresas.Configuracoes[emp].AppID,
-                    Secret = Empresas.Configuracoes[emp].Secret
-                });
-
-                #endregion
-
-                #region Enviar instrução para marcar o boleto como pago
-
-                var billetService = new BilletService();
-                var informPaymentResponse = await billetService.BaixarAsync(informPaymentRequest, authenticatedScope);
-
-                authenticatedScope.Dispose();
-
-                #endregion
-
-                #region Gravar XML de Retorno
-
-                var file = Functions.ExtrairNomeArq(NomeArquivoXML, Propriedade.Extensao(Propriedade.TipoEnvio.BoletoInformarPagto).EnvioXML) + Propriedade.Extensao(Propriedade.TipoEnvio.BoletoInformarPagto).RetornoXML;
-                var pathXml = Path.Combine(Empresas.Configuracoes[emp].PastaXmlRetorno, file);
-
-                if (informPaymentResponse.StatusCode == System.Net.HttpStatusCode.Accepted || informPaymentResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    GerarXmlRetorno(pathXml, "0", "");
-                }
-                else
-                {
-                    GerarXmlRetorno(pathXml, "1", $"Não foi possível marcar o boleto como pago. Tente novamente mais tarde. (Status Code: {((int)informPaymentResponse.StatusCode).ToString()})" + 
-                        (!string.IsNullOrWhiteSpace(informPaymentResponse.Codigo) ? " - (Erro: " + informPaymentResponse.Codigo + 
-                        (!string.IsNullOrWhiteSpace(informPaymentResponse.Mensagem) ? " - " + informPaymentResponse.Mensagem : "") + ")" : ""));
-                }
-
-                #endregion
+                ExecuteDLL(emp);
             }
             catch (Exception ex)
             {
-                var file = Functions.ExtrairNomeArq(NomeArquivoXML, Propriedade.Extensao(Propriedade.TipoEnvio.BoletoInformarPagto).EnvioXML) + Propriedade.Extensao(Propriedade.TipoEnvio.BoletoInformarPagto).RetornoXML;
-                var pathXml = Path.Combine(Empresas.Configuracoes[emp].PastaXmlRetorno, file);
-
-                GerarXmlRetorno(pathXml, "999", ex.GetLastException().Message.Replace("\r\n", " | "));
+                var lastException = ex.GetLastException();
+                var traceId = ApiExceptionHelper.ExtrairTraceId(lastException);
+                ApiExceptionHelper.GravarXmlRetornoEBoleto(pathXml, "BoletoInformarPagtoResponse", "999", lastException.Message.Replace("\r\n", " | "), traceId);
             }
             finally
             {
                 try
                 {
-                    //Deletar o arquivo de solicitação do serviço
                     Functions.DeletarArquivo(NomeArquivoXML);
                 }
                 catch
                 {
-                    //Se falhou algo na hora de deletar o XML de solicitação do serviço,
-
-                    //infelizmente não posso fazer mais nada, o UniNFe vai tentar mandar
-                    //o arquivo novamente para o webservice
-                    //Wandrey 09/03/2010
                 }
             }
         }
 
-        private void GerarXmlRetorno(string path, string status, string motivo)
-        {
-            var oSettings = new XmlWriterSettings();
-            var c = new UTF8Encoding(false);
+        #region ExecuteDLL
 
-            oSettings.Encoding = c;
-            oSettings.Indent = true;
-            oSettings.IndentChars = " ";
-            oSettings.NewLineOnAttributes = false;
-            oSettings.OmitXmlDeclaration = false;
-            XmlWriter oXmlGravar = null;
+        private void ExecuteDLL(int emp)
+        {
+            var finalArqEnvio = Propriedade.Extensao(Propriedade.TipoEnvio.BoletoInformarPagto).EnvioXML;
+            var finalArqRetorno = Propriedade.Extensao(Propriedade.TipoEnvio.BoletoInformarPagto).RetornoXML;
+
+            var configuracao = new Configuracao
+            {
+                PrepararConexaoTLSAntesDoEnvio = Empresas.Configuracoes[emp].AtivarPreparacaoTLSAntesEnvioXML,
+                CertificadoDigital = Empresas.Configuracoes[emp].X509Certificado,
+                TipoAmbiente = (Unimake.Business.DFe.Servicos.TipoAmbiente)Empresas.Configuracoes[emp].AmbienteCodigo,
+                CodigoUF = Empresas.Configuracoes[emp].UnidadeFederativaCodigo,
+                AppId = Empresas.Configuracoes[emp].AppID,
+                Secret = Empresas.Configuracoes[emp].Secret
+            };
 
             try
             {
-                switch (status)
-                {
-                    case "0":
-                        motivo = "Instrução para marcar o boleto como pago enviado com sucesso";
-                        break;
-                }
+                var xmlCancelar = ConverterRaiz(ConteudoXML.OuterXml, "BoletoCancelar");
 
-                oXmlGravar = XmlWriter.Create(path, oSettings);
-                oXmlGravar.WriteStartDocument();
-                oXmlGravar.WriteStartElement("BoletoInformarPagtoResponse");
-                oXmlGravar.WriteElementString("Status", status);
-                oXmlGravar.WriteElementString("Motivo", motivo);
-                oXmlGravar.WriteElementString("UniNFeVersao", Propriedade.Versao + " | " + Propriedade.DataHoraUltimaModificacaoAplicacao.Replace("/", "-"));
-                oXmlGravar.WriteEndElement(); //BoletoInformarPagtoResponse
-                oXmlGravar.WriteEndDocument();
-                oXmlGravar.Flush();
-                oXmlGravar.Close();
-            }
-            finally
-            {
-                if (oXmlGravar != null)
+                using (var boleto = new BoletoCancelarService(xmlCancelar, configuracao))
                 {
-                    if (oXmlGravar.WriteState != WriteState.Closed)
+                    boleto.Executar();
+                    vStrXmlRetorno = ConverterRaiz(boleto.RetornoWSString, "BoletoInformarPagtoResponse");
+
+                    if (string.IsNullOrWhiteSpace(vStrXmlRetorno))
                     {
-                        oXmlGravar.Close();
+                        throw new Exception("A implementação do serviço eBoleto BoletoCancelar não retornou RetornoWSString. Atualize a DLL para fornecer o XML de retorno pronto.");
                     }
+
+                    vStrXmlRetorno = AdicionarUniNFeVersaoAoRetorno(vStrXmlRetorno);
+
+                    XmlRetorno(finalArqEnvio, finalArqRetorno);
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao executar DLL eBoleto BoletoCancelar para compatibilidade com BoletoInformarPagto: {ex.Message}", ex);
             }
         }
+
+        private static string ConverterRaiz(string conteudoXml, string nomeRaiz)
+        {
+            if (string.IsNullOrWhiteSpace(conteudoXml))
+            {
+                return conteudoXml;
+            }
+
+            var xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(conteudoXml);
+
+            if (xmlDoc.DocumentElement != null && xmlDoc.DocumentElement.Name != nomeRaiz)
+            {
+                var raizAtual = xmlDoc.DocumentElement;
+                var novaRaiz = xmlDoc.CreateElement(raizAtual.Prefix, nomeRaiz, raizAtual.NamespaceURI);
+
+                foreach (XmlAttribute atributo in raizAtual.Attributes)
+                {
+                    novaRaiz.Attributes.Append((XmlAttribute)xmlDoc.ImportNode(atributo, true));
+                }
+
+                while (raizAtual.HasChildNodes)
+                {
+                    novaRaiz.AppendChild(raizAtual.FirstChild);
+                }
+
+                xmlDoc.ReplaceChild(novaRaiz, raizAtual);
+            }
+
+            return xmlDoc.OuterXml;
+        }
+
+        private string AdicionarUniNFeVersaoAoRetorno(string xmlRetorno)
+        {
+            if (string.IsNullOrWhiteSpace(xmlRetorno))
+            {
+                return xmlRetorno;
+            }
+
+            var xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(xmlRetorno);
+
+            var root = xmlDoc.DocumentElement;
+            if (root == null || root["UniNFeVersao"] != null)
+            {
+                return xmlRetorno;
+            }
+
+            var versaoNode = xmlDoc.CreateElement("UniNFeVersao");
+            versaoNode.InnerText = Propriedade.Versao + " | " + Propriedade.DataHoraUltimaModificacaoAplicacao.Replace("/", "-");
+            root.AppendChild(versaoNode);
+
+            return xmlDoc.OuterXml;
+        }
+        #endregion ExecuteDLL
     }
 }

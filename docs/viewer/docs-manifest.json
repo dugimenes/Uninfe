@@ -1,0 +1,635 @@
+{
+  "generatedAt": "2026-09-05T18:05:17.623Z",
+  "documents": [
+    {
+      "id": "introducao-o-que-e-uninfe-md",
+      "title": "O que é o UniNFe",
+      "path": "introducao/o-que-e-uninfe.md",
+      "category": "introducao"
+    },
+    {
+      "id": "instalacao-atualizacao-md",
+      "title": "Atualização do UniNFe",
+      "path": "instalacao/atualizacao.md",
+      "category": "instalacao"
+    },
+    {
+      "id": "instalacao-executar-como-servico-windows-md",
+      "title": "Executar o UniNFe como Serviço no Windows",
+      "path": "instalacao/executar-como-servico-windows.md",
+      "category": "instalacao"
+    },
+    {
+      "id": "instalacao-instalacao-md",
+      "title": "Instalação do UniNFe",
+      "path": "instalacao/instalacao.md",
+      "category": "instalacao"
+    },
+    {
+      "id": "configuracao-cadastro-nova-empresa-md",
+      "title": "Cadastro de Nova Empresa",
+      "path": "configuracao/cadastro-nova-empresa.md",
+      "category": "configuracao"
+    },
+    {
+      "id": "configuracao-configuracao-automatica-por-arquivo-md",
+      "title": "Configuração automática do UniNFe por arquivo",
+      "path": "configuracao/configuracao-automatica-por-arquivo.md",
+      "category": "configuracao"
+    },
+    {
+      "id": "configuracao-telas-cadastros-configuracoes-md",
+      "title": "Tela Configurações",
+      "path": "configuracao/telas-cadastros-configuracoes.md",
+      "category": "configuracao"
+    },
+    {
+      "id": "contingencia-formulario-de-seguranca-md",
+      "title": "Contingência em formulário de segurança",
+      "path": "contingencia/formulario-de-seguranca.md",
+      "category": "contingencia"
+    },
+    {
+      "id": "contingencia-epec-md",
+      "title": "Contingência EPEC",
+      "path": "contingencia/epec.md",
+      "category": "contingencia"
+    },
+    {
+      "id": "contingencia-off-line-md",
+      "title": "Contingência Off-line",
+      "path": "contingencia/off-line.md",
+      "category": "contingencia"
+    },
+    {
+      "id": "contingencia-svc-md",
+      "title": "Contingência SVC (RS, AN e SP)",
+      "path": "contingencia/svc.md",
+      "category": "contingencia"
+    },
+    {
+      "id": "erros-e-solucoes-erros-e-solucoes-md",
+      "title": "Erros e soluções",
+      "path": "erros-e-solucoes/erros-e-solucoes.md",
+      "category": "erros-e-solucoes"
+    },
+    {
+      "id": "referencias-apoio-e-suporte-md",
+      "title": "Apoio e Suporte",
+      "path": "referencias/apoio-e-suporte.md",
+      "category": "referencias"
+    },
+    {
+      "id": "referencias-menu-principal-md",
+      "title": "Menu Principal",
+      "path": "referencias/menu-principal.md",
+      "category": "referencias"
+    },
+    {
+      "id": "referencias-notas-tecnicas-e-noticias-para-desenvolvedores-md",
+      "title": "Notas técnicas e notícias para desenvolvedores",
+      "path": "referencias/notas-tecnicas-e-noticias-para-desenvolvedores.md",
+      "category": "referencias"
+    },
+    {
+      "id": "referencias-perguntas-frequentes-md",
+      "title": "Perguntas frequentes",
+      "path": "referencias/perguntas-frequentes.md",
+      "category": "referencias"
+    },
+    {
+      "id": "referencias-reforma-tributaria-nfe-nfce-md",
+      "title": "Reforma Tributária - NFe/NFCe",
+      "path": "referencias/reforma-tributaria-nfe-nfce.md",
+      "category": "referencias"
+    },
+    {
+      "id": "referencias-reforma-tributaria-nfse-md",
+      "title": "Reforma Tributária - NFSe",
+      "path": "referencias/reforma-tributaria-nfse.md",
+      "category": "referencias"
+    },
+    {
+      "id": "referencias-tela-log-md",
+      "title": "Tela Log",
+      "path": "referencias/tela-log.md",
+      "category": "referencias"
+    },
+    {
+      "id": "referencias-tela-sobre-md",
+      "title": "Tela Sobre",
+      "path": "referencias/tela-sobre.md",
+      "category": "referencias"
+    },
+    {
+      "id": "referencias-tela-validar-xml-md",
+      "title": "Tela Validar XML",
+      "path": "referencias/tela-validar-xml.md",
+      "category": "referencias"
+    },
+    {
+      "id": "servicos-consulta-status-servico-md",
+      "title": "Consulta Status De Serviço",
+      "path": "servicos/consulta-status-servico.md",
+      "category": "servicos"
+    },
+    {
+      "id": "servicos-consulta-cadastro-contribuinte-md",
+      "title": "Tela Consulta ao Cadastro de Contribuinte",
+      "path": "servicos/consulta-cadastro-contribuinte.md",
+      "category": "servicos"
+    },
+    {
+      "id": "servicos-bpe-autorizacao-sincrona-md",
+      "title": "Autorização síncrona de BPe",
+      "path": "servicos/bpe/autorizacao-sincrona.md",
+      "category": "servicos/bpe"
+    },
+    {
+      "id": "servicos-bpe-autorizacao-sincrona-bpe-ta-md",
+      "title": "Autorização síncrona de BPe TA",
+      "path": "servicos/bpe/autorizacao-sincrona-bpe-ta.md",
+      "category": "servicos/bpe"
+    },
+    {
+      "id": "servicos-bpe-autorizacao-sincrona-bpe-tm-md",
+      "title": "Autorização síncrona de BPe TM",
+      "path": "servicos/bpe/autorizacao-sincrona-bpe-tm.md",
+      "category": "servicos/bpe"
+    },
+    {
+      "id": "servicos-bpe-consulta-situacao-md",
+      "title": "Consulta de situação do BPe",
+      "path": "servicos/bpe/consulta-situacao.md",
+      "category": "servicos/bpe"
+    },
+    {
+      "id": "servicos-bpe-consulta-status-servico-md",
+      "title": "Consulta status de serviço do BPe",
+      "path": "servicos/bpe/consulta-status-servico.md",
+      "category": "servicos/bpe"
+    },
+    {
+      "id": "servicos-bpe-eventos-md",
+      "title": "Eventos do BPe",
+      "path": "servicos/bpe/eventos.md",
+      "category": "servicos/bpe"
+    },
+    {
+      "id": "servicos-ccg-consulta-gtin-md",
+      "title": "Consulta GTIN",
+      "path": "servicos/ccg/consulta-gtin.md",
+      "category": "servicos/ccg"
+    },
+    {
+      "id": "servicos-ciot-cadastro-motorista-efrete-md",
+      "title": "Cadastro de motorista no eFrete",
+      "path": "servicos/ciot/cadastro-motorista-efrete.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-cadastro-proprietario-efrete-md",
+      "title": "Cadastro de proprietário no eFrete",
+      "path": "servicos/ciot/cadastro-proprietario-efrete.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-cadastro-veiculo-efrete-md",
+      "title": "Cadastro de veículo no eFrete",
+      "path": "servicos/ciot/cadastro-veiculo-efrete.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-cancelamento-operacao-transporte-md",
+      "title": "Cancelamento da operação de transporte do CIOT",
+      "path": "servicos/ciot/cancelamento-operacao-transporte.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-consultar-ciot-gerado-md",
+      "title": "Consultar CIOT gerado",
+      "path": "servicos/ciot/consultar-ciot-gerado.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-consultar-excecao-md",
+      "title": "Consultar exceção do CIOT",
+      "path": "servicos/ciot/consultar-excecao.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-consultar-frota-transportador-md",
+      "title": "Consultar frota do transportador no CIOT",
+      "path": "servicos/ciot/consultar-frota-transportador.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-consultar-situacao-transportador-md",
+      "title": "Consultar situação do transportador no CIOT",
+      "path": "servicos/ciot/consultar-situacao-transportador.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-declaracao-operacao-transporte-md",
+      "title": "Declaração de operação de transporte do CIOT",
+      "path": "servicos/ciot/declaracao-operacao-transporte.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-encerramento-operacao-transporte-md",
+      "title": "Encerramento da operação de transporte do CIOT",
+      "path": "servicos/ciot/encerramento-operacao-transporte.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-gerar-id-operacao-transporte-md",
+      "title": "Gerar identificador da operação de transporte do CIOT",
+      "path": "servicos/ciot/gerar-id-operacao-transporte.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-obter-pdf-operacao-transporte-efrete-md",
+      "title": "Obter o PDF da operação de transporte no eFrete",
+      "path": "servicos/ciot/obter-pdf-operacao-transporte-efrete.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-ciot-retificacao-operacao-transporte-md",
+      "title": "Retificação da operação de transporte do CIOT",
+      "path": "servicos/ciot/retificacao-operacao-transporte.md",
+      "category": "servicos/ciot"
+    },
+    {
+      "id": "servicos-cte-autorizacao-cte-os-md",
+      "title": "Autorização de CTe OS",
+      "path": "servicos/cte/autorizacao-cte-os.md",
+      "category": "servicos/cte"
+    },
+    {
+      "id": "servicos-cte-autorizacao-cte-simplificado-md",
+      "title": "Autorização de CTe simplificado",
+      "path": "servicos/cte/autorizacao-cte-simplificado.md",
+      "category": "servicos/cte"
+    },
+    {
+      "id": "servicos-cte-autorizacao-sincrona-md",
+      "title": "Autorização síncrona de CTe",
+      "path": "servicos/cte/autorizacao-sincrona.md",
+      "category": "servicos/cte"
+    },
+    {
+      "id": "servicos-cte-consulta-situacao-md",
+      "title": "Consulta de situação do CTe",
+      "path": "servicos/cte/consulta-situacao.md",
+      "category": "servicos/cte"
+    },
+    {
+      "id": "servicos-cte-consulta-status-servico-md",
+      "title": "Consulta status de serviço do CTe",
+      "path": "servicos/cte/consulta-status-servico.md",
+      "category": "servicos/cte"
+    },
+    {
+      "id": "servicos-cte-eventos-md",
+      "title": "Eventos do CTe",
+      "path": "servicos/cte/eventos.md",
+      "category": "servicos/cte"
+    },
+    {
+      "id": "servicos-dare-consulta-receitas-md",
+      "title": "Consulta de receitas do DARE",
+      "path": "servicos/dare/consulta-receitas.md",
+      "category": "servicos/dare"
+    },
+    {
+      "id": "servicos-dare-recepcao-md",
+      "title": "Recepção do DARE",
+      "path": "servicos/dare/recepcao.md",
+      "category": "servicos/dare"
+    },
+    {
+      "id": "servicos-dce-autorizacao-sincrona-md",
+      "title": "Autorização síncrona de DCe",
+      "path": "servicos/dce/autorizacao-sincrona.md",
+      "category": "servicos/dce"
+    },
+    {
+      "id": "servicos-dce-consulta-situacao-md",
+      "title": "Consulta de situação da DCe",
+      "path": "servicos/dce/consulta-situacao.md",
+      "category": "servicos/dce"
+    },
+    {
+      "id": "servicos-dce-consulta-status-servico-md",
+      "title": "Consulta status de serviço da DCe",
+      "path": "servicos/dce/consulta-status-servico.md",
+      "category": "servicos/dce"
+    },
+    {
+      "id": "servicos-dce-eventos-md",
+      "title": "Eventos da DCe",
+      "path": "servicos/dce/eventos.md",
+      "category": "servicos/dce"
+    },
+    {
+      "id": "servicos-dfe-distribuicao-dfe-md",
+      "title": "Distribuição DFe",
+      "path": "servicos/dfe/distribuicao-dfe.md",
+      "category": "servicos/dfe"
+    },
+    {
+      "id": "servicos-dfe-distribuicao-dfe-cte-md",
+      "title": "Distribuição DFe de CT-e",
+      "path": "servicos/dfe/distribuicao-dfe-cte.md",
+      "category": "servicos/dfe"
+    },
+    {
+      "id": "servicos-eboleto-alterar-vencimento-md",
+      "title": "Alterar vencimento do boleto",
+      "path": "servicos/eboleto/alterar-vencimento.md",
+      "category": "servicos/eboleto"
+    },
+    {
+      "id": "servicos-eboleto-cancelar-boleto-md",
+      "title": "Cancelar boleto",
+      "path": "servicos/eboleto/cancelar-boleto.md",
+      "category": "servicos/eboleto"
+    },
+    {
+      "id": "servicos-eboleto-consultar-boleto-md",
+      "title": "Consultar boleto",
+      "path": "servicos/eboleto/consultar-boleto.md",
+      "category": "servicos/eboleto"
+    },
+    {
+      "id": "servicos-eboleto-enviar-instrucao-md",
+      "title": "Enviar instrução do boleto",
+      "path": "servicos/eboleto/enviar-instrucao.md",
+      "category": "servicos/eboleto"
+    },
+    {
+      "id": "servicos-eboleto-informar-pagamento-md",
+      "title": "Informar pagamento do boleto",
+      "path": "servicos/eboleto/informar-pagamento.md",
+      "category": "servicos/eboleto"
+    },
+    {
+      "id": "servicos-eboleto-registrar-boleto-md",
+      "title": "Registrar boleto",
+      "path": "servicos/eboleto/registrar-boleto.md",
+      "category": "servicos/eboleto"
+    },
+    {
+      "id": "servicos-efdreinf-consulta-lote-assincrono-md",
+      "title": "Consulta de lote assíncrono da EFD-Reinf",
+      "path": "servicos/efdreinf/consulta-lote-assincrono.md",
+      "category": "servicos/efdreinf"
+    },
+    {
+      "id": "servicos-efdreinf-consultas-md",
+      "title": "Consultas da EFD-Reinf",
+      "path": "servicos/efdreinf/consultas.md",
+      "category": "servicos/efdreinf"
+    },
+    {
+      "id": "servicos-efdreinf-recepcao-lote-eventos-md",
+      "title": "Recepção de lote de eventos da EFD-Reinf",
+      "path": "servicos/efdreinf/recepcao-lote-eventos.md",
+      "category": "servicos/efdreinf"
+    },
+    {
+      "id": "servicos-esocial-consulta-identificadores-eventos-md",
+      "title": "Consulta de identificadores de eventos do eSocial",
+      "path": "servicos/esocial/consulta-identificadores-eventos.md",
+      "category": "servicos/esocial"
+    },
+    {
+      "id": "servicos-esocial-consulta-lote-eventos-md",
+      "title": "Consulta de lote de eventos do eSocial",
+      "path": "servicos/esocial/consulta-lote-eventos.md",
+      "category": "servicos/esocial"
+    },
+    {
+      "id": "servicos-esocial-download-eventos-md",
+      "title": "Download de eventos do eSocial",
+      "path": "servicos/esocial/download-eventos.md",
+      "category": "servicos/esocial"
+    },
+    {
+      "id": "servicos-esocial-recepcao-lote-eventos-md",
+      "title": "Recepção de lote de eventos do eSocial",
+      "path": "servicos/esocial/recepcao-lote-eventos.md",
+      "category": "servicos/esocial"
+    },
+    {
+      "id": "servicos-gnre-consulta-configuracao-uf-md",
+      "title": "Consulta de configuração da UF GNRE",
+      "path": "servicos/gnre/consulta-configuracao-uf.md",
+      "category": "servicos/gnre"
+    },
+    {
+      "id": "servicos-gnre-consulta-resultado-lote-md",
+      "title": "Consulta de resultado do lote GNRE",
+      "path": "servicos/gnre/consulta-resultado-lote.md",
+      "category": "servicos/gnre"
+    },
+    {
+      "id": "servicos-gnre-recepcao-lote-md",
+      "title": "Recepção de lote GNRE",
+      "path": "servicos/gnre/recepcao-lote.md",
+      "category": "servicos/gnre"
+    },
+    {
+      "id": "servicos-mdfe-autorizacao-sincrona-md",
+      "title": "Autorização síncrona de MDFe",
+      "path": "servicos/mdfe/autorizacao-sincrona.md",
+      "category": "servicos/mdfe"
+    },
+    {
+      "id": "servicos-mdfe-consulta-nao-encerrados-md",
+      "title": "Consulta de MDFe não encerrados",
+      "path": "servicos/mdfe/consulta-nao-encerrados.md",
+      "category": "servicos/mdfe"
+    },
+    {
+      "id": "servicos-mdfe-consulta-situacao-md",
+      "title": "Consulta de situação do MDFe",
+      "path": "servicos/mdfe/consulta-situacao.md",
+      "category": "servicos/mdfe"
+    },
+    {
+      "id": "servicos-mdfe-consulta-status-servico-md",
+      "title": "Consulta status de serviço do MDFe",
+      "path": "servicos/mdfe/consulta-status-servico.md",
+      "category": "servicos/mdfe"
+    },
+    {
+      "id": "servicos-mdfe-eventos-md",
+      "title": "Eventos do MDFe",
+      "path": "servicos/mdfe/eventos.md",
+      "category": "servicos/mdfe"
+    },
+    {
+      "id": "servicos-nf3e-autorizacao-sincrona-md",
+      "title": "Autorização síncrona de NF3e",
+      "path": "servicos/nf3e/autorizacao-sincrona.md",
+      "category": "servicos/nf3e"
+    },
+    {
+      "id": "servicos-nf3e-consulta-situacao-md",
+      "title": "Consulta de situação da NF3e",
+      "path": "servicos/nf3e/consulta-situacao.md",
+      "category": "servicos/nf3e"
+    },
+    {
+      "id": "servicos-nf3e-consulta-status-servico-md",
+      "title": "Consulta status de serviço da NF3e",
+      "path": "servicos/nf3e/consulta-status-servico.md",
+      "category": "servicos/nf3e"
+    },
+    {
+      "id": "servicos-nf3e-eventos-md",
+      "title": "Eventos da NF3e",
+      "path": "servicos/nf3e/eventos.md",
+      "category": "servicos/nf3e"
+    },
+    {
+      "id": "servicos-nfce-download-e-consulta-chaves-sp-md",
+      "title": "Consulta de chaves e download de XML da NFCe em São Paulo",
+      "path": "servicos/nfce/download-e-consulta-chaves-sp.md",
+      "category": "servicos/nfce"
+    },
+    {
+      "id": "servicos-nfcom-autorizacao-sincrona-md",
+      "title": "Autorização síncrona de NFCom",
+      "path": "servicos/nfcom/autorizacao-sincrona.md",
+      "category": "servicos/nfcom"
+    },
+    {
+      "id": "servicos-nfcom-consulta-situacao-md",
+      "title": "Consulta de situação da NFCom",
+      "path": "servicos/nfcom/consulta-situacao.md",
+      "category": "servicos/nfcom"
+    },
+    {
+      "id": "servicos-nfcom-consulta-status-servico-md",
+      "title": "Consulta status de serviço da NFCom",
+      "path": "servicos/nfcom/consulta-status-servico.md",
+      "category": "servicos/nfcom"
+    },
+    {
+      "id": "servicos-nfcom-eventos-md",
+      "title": "Eventos da NFCom",
+      "path": "servicos/nfcom/eventos.md",
+      "category": "servicos/nfcom"
+    },
+    {
+      "id": "servicos-nfe-autorizacao-md",
+      "title": "Autorização de NFe e NFCe por arquivo",
+      "path": "servicos/nfe/autorizacao.md",
+      "category": "servicos/nfe"
+    },
+    {
+      "id": "servicos-nfe-consulta-cadastro-contribuinte-arquivo-md",
+      "title": "Consulta cadastro de contribuinte por arquivo",
+      "path": "servicos/nfe/consulta-cadastro-contribuinte-arquivo.md",
+      "category": "servicos/nfe"
+    },
+    {
+      "id": "servicos-nfe-consulta-situacao-arquivo-md",
+      "title": "Consulta de situação de NFe e NFCe por arquivo",
+      "path": "servicos/nfe/consulta-situacao-arquivo.md",
+      "category": "servicos/nfe"
+    },
+    {
+      "id": "servicos-nfe-consulta-status-servico-arquivo-md",
+      "title": "Consulta status de serviço de NFe e NFCe por arquivo",
+      "path": "servicos/nfe/consulta-status-servico-arquivo.md",
+      "category": "servicos/nfe"
+    },
+    {
+      "id": "servicos-nfe-conversao-txt-para-xml-md",
+      "title": "Conversão de TXT para XML de NFe e NFCe",
+      "path": "servicos/nfe/conversao-txt-para-xml.md",
+      "category": "servicos/nfe"
+    },
+    {
+      "id": "servicos-nfe-eventos-md",
+      "title": "Eventos de NFe e NFCe por arquivo",
+      "path": "servicos/nfe/eventos.md",
+      "category": "servicos/nfe"
+    },
+    {
+      "id": "servicos-nfe-inutilizacao-numeracao-md",
+      "title": "Inutilização de numeração de NFe e NFCe",
+      "path": "servicos/nfe/inutilizacao-numeracao.md",
+      "category": "servicos/nfe"
+    },
+    {
+      "id": "servicos-nfgas-autorizacao-sincrona-md",
+      "title": "Autorização síncrona de NFGas",
+      "path": "servicos/nfgas/autorizacao-sincrona.md",
+      "category": "servicos/nfgas"
+    },
+    {
+      "id": "servicos-nfgas-consulta-situacao-md",
+      "title": "Consulta de situação da NFGas",
+      "path": "servicos/nfgas/consulta-situacao.md",
+      "category": "servicos/nfgas"
+    },
+    {
+      "id": "servicos-nfgas-consulta-status-servico-md",
+      "title": "Consulta status de serviço da NFGas",
+      "path": "servicos/nfgas/consulta-status-servico.md",
+      "category": "servicos/nfgas"
+    },
+    {
+      "id": "servicos-nfgas-eventos-md",
+      "title": "Eventos da NFGas",
+      "path": "servicos/nfgas/eventos.md",
+      "category": "servicos/nfgas"
+    },
+    {
+      "id": "servicos-pix-consultar-movimentos-md",
+      "title": "Consultar movimentos PIX",
+      "path": "servicos/pix/consultar-movimentos.md",
+      "category": "servicos/pix"
+    },
+    {
+      "id": "servicos-pix-consultar-pix-md",
+      "title": "Consultar PIX por TxId",
+      "path": "servicos/pix/consultar-pix.md",
+      "category": "servicos/pix"
+    },
+    {
+      "id": "servicos-pix-criar-cobranca-md",
+      "title": "Criar cobrança PIX",
+      "path": "servicos/pix/criar-cobranca.md",
+      "category": "servicos/pix"
+    },
+    {
+      "id": "servicos-umessenger-envio-mensagens-md",
+      "title": "Envio de mensagens pelo uMessenger",
+      "path": "servicos/umessenger/envio-mensagens.md",
+      "category": "servicos/umessenger"
+    },
+    {
+      "id": "servicos-uninfe-consulta-informacoes-certificados-md",
+      "title": "Consulta de certificados digitais do UniNFe",
+      "path": "servicos/uninfe/consulta-informacoes-certificados.md",
+      "category": "servicos/uninfe"
+    },
+    {
+      "id": "servicos-uninfe-consulta-informacoes-md",
+      "title": "Consulta de informações do UniNFe",
+      "path": "servicos/uninfe/consulta-informacoes.md",
+      "category": "servicos/uninfe"
+    },
+    {
+      "id": "index-md",
+      "title": "Documentacao Do UniNFe",
+      "path": "index.md",
+      "category": "Raiz"
+    }
+  ]
+}

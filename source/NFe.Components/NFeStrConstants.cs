@@ -12,6 +12,7 @@ namespace NFe.Components
         anoFab,
         anoMod,
         adRemCBS,
+        adRemIS,
         adRemIBS,
         adRemCBSReten,
         adRemCBSRet,
@@ -50,6 +51,7 @@ namespace NFe.Components
         cCor,
         cCorDENATRAN,
         cCT,
+        cDC,
         cDV,
         cEAN,
         cBarra,
@@ -72,6 +74,9 @@ namespace NFe.Components
         chNFe,
         chNF3e,
         chNFCom,
+        chNFGas,
+        chBPe,
+        chCIOT,
         cilin,
         cIMP,
         cInt,
@@ -268,6 +273,7 @@ namespace NFe.Components
         IS,
         ISTot,
         ISUF,
+        ISUFEmit,
         itemPedido,
         indImport,
         indDeduzDeson,
@@ -300,6 +306,7 @@ namespace NFe.Components
         nCompra,
         nCont,
         nCT,
+        nDC,
         nCtrl,
         nDAR,
         nMDF,
@@ -365,6 +372,7 @@ namespace NFe.Components
         pDif,
         pDifCBS,
         pDifIBS,
+        pDevTrib,
         pDevol,
         pMixGN,
         pCBS,
@@ -449,6 +457,8 @@ namespace NFe.Components
         refCte,
         refCteAnu,
         refCTE,
+        refDFe,
+        refDFeAnt,
         refNFe,
         RENAVAM,
         repEmi,
@@ -759,6 +769,10 @@ namespace NFe.Components
         public static string NAME_SPACE_NFE = "http://www.portalfiscal.inf.br/nfe";
         public static string NAME_SPACE_NF3E = "http://www.portalfiscal.inf.br/nf3e";
         public static string NAME_SPACE_NFCOM = "http://www.portalfiscal.inf.br/nfcom";
+        public static string NAME_SPACE_NFGAS = "http://www.portalfiscal.inf.br/nfgas";
+        public static string NAME_SPACE_BPE = "http://www.portalfiscal.inf.br/bpe";
+        public static string NAME_SPACE_CIOT = "http://www.antt.gov.br/ciot";
+        public static string NAME_SPACE_DCE = "http://www.portalfiscal.inf.br/dce";
 
         public static string proxyError = "Especifique o nome do servidor/usuário/senha e porta para conectar do servidor proxy";
         public static string versaoError = "Defina a versão";
